@@ -34,7 +34,7 @@ Get a VM with 8 GB of RAM and Ubuntu x86-64, the newer the better. ssh into the 
 Once you're in, we'll install and configure microk8s
 
 ```bash
-$ apt install byobu snap
+$ apt install byobu snap openjdk-11-jre
 $ byobu
 $ snap install microk8s --classic
 $ microk8s enable dashboard dns registry ingress
@@ -55,6 +55,7 @@ ufw status
 
 TODO:
 * setup TeamCity or Jenkins, but not in Docker so that they can access fs, run shepherd-build and run docker commands.
+  * Try Jenkins first, [as a linux service](https://www.jenkins.io/doc/book/installing/linux/); TODO set memory to 2GB
   * max concurrent jobs: 2 or 3, depending on ubuntu memory (2 for 8GB, 3 for 16GB+)
   * max memory 1024m for Maven, 1500m for Gradle.
 * Certbot/Let's Encrypt: https://microk8s.io/docs/addon-cert-manager
