@@ -10,8 +10,10 @@ This is mostly a documentation on how to get things running quickly in cloud VM.
 Uses components:
 
 * A VM with Ubuntu
-* microk8s
-* TeamCity
+* microk8s for keeping containers up-and-running, replaces nginx with ingress,
+  contains logs, gathers metrics (CPU/Memory).
+* TeamCity pulls git link periodically, then calls `shepherd-build` which builds new docker image, uploads to microk8s registry and restarts pods.
+* no need for CD atm.
 
 Shepherd expects the following from your project:
 
@@ -51,4 +53,83 @@ ufw enable
 ufw status
 ```
 
-TODO setup TeamCity or Jenkins
+TODO:
+* setup TeamCity or Jenkins
+  * max concurrent jobs: 2 or 3, depending on ubuntu memory (2 for 8GB, 3 for 16GB+)
+  * max memory 1024m for Maven, 1500m for Gradle.
+* Certbot/Let's Encrypt: https://microk8s.io/docs/addon-cert-manager
+* Copy `scripts/` somewhere on the fs
+
+## Adding a project
+
+First, decide on the project id, e.g. `vaadin-boot-example-gradle`. The project ID will go into k8s namespace;
+Namespace must be a valid [DNS Name](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-label-names),
+which means that the project ID must:
+
+* contain at most 54 characters (63 characters DNS name, minus 9 characters `shepherd-` prefix)
+* contain only lowercase alphanumeric characters or '-'
+* start with an alphanumeric character
+* end with an alphanumeric character
+
+Now create the project's k8s resource config file yaml named `/etc/vaadin-shepherd/k8s/PROJECT_ID.yaml`.
+Don't forget to use the `shepherd-PROJECT_ID` namespace. TODO use `shepherd-new` script to create a new yaml for you.
+Since all project has its own namespace, the k8s resource names can simply always be "deployment", "service", "pod", "ingress-global", "ingress-host".
+
+* That solves runtime config: mem, cpu, env variables, but also database, Vaadin monitoring, persistent storage, ...
+* Builder will copy the resource yaml, modify image hash, then `mkctl apply -f`.
+
+TODO create `shepherd-new` script which creates a new yaml for you, then
+tell me next steps: to create the build pipeline in the CI which runs `shepherd-build`.
+
+Add a job to teamcity. git-clone a project, then run `shepherd-build` on it. `shepherd-build` expects the following
+env variables:
+
+* `PROJECT_ID`: the project id, e.g. `vaadin-boot-example-gradle`
+* `BUILD_MEMORY`: (optional) how much memory the build image will get. Defaults to `1024m`, but for Gradle use `1500m`
+
+Doesn't accept buildargs, but the ENV variables can be defined directly in k8s resource yaml.
+
+## Removing a project
+
+* Remove CI pipeline by hand
+* run `mkctl delete -f /etc/vaadin-shepherd/k8s/PROJECT_ID.yaml`
+
+# Misc
+
+## Configuration
+
+Configuration: Every project has its own set of configuration files (perhaps committed to git?):
+
+* microk8s: resource config yaml, defining:
+   * routing/ingress/hostnames
+   * container env (storage, env vars, resources: mem/cpu)
+   * container name: `localhost:32000/shepherd/project_id`
+* CI: git repo URL, build env (memory), docker buildArgs
+   * CPUs per build: 2, max concurrent jobs: 3, max memory 1024m for Maven, 1500m for Gradle.
+   * Builds docker images via `docker build --nocache -t localhost:32000/shepherd/project_id -m 1500m --cpu-period 100000 --cpu-quota 200000 --build-arg key=value .`
+   * When it passes, it needs to construct new yaml for microk8s and push that, while deleting old rules.
+      * This is where CD could help, but CD shared git repo sounds like trouble (read below).
+      * Old rules won't be deleted by CI, only by hand: The only rule to be ever deleted is Ingress custom host rule, and that almost never happens.
+
+## Tips for CI
+
+Requirements:
+
+* Needs to be self-hosted, open-source and free
+* Should use as few RAM as possible
+* Should be able to periodically poll git repo
+
+Evaluated CIs [awesome-ci](https://github.com/ligurio/awesome-ci):
+
+* [Jenkins](https://www.jenkins.io/) - not bad but uses a whopping 4GB of RAM. Use TeamCity instead.
+* CircleCI - self-hosted option is not free. Skip.
+* Concourse-CI: The `fly` binary is suspicious; the YAML config is weird; simple git build example missing. Skip.
+* AppCircle.io: self-hosted option is not free. Skip.
+* Agola.io: PITA top setup, you need etcd cluster, object storage and whatever. Skip.
+* OpenShift gitops? Based on huge OpenShift and 'only' adds in Argo CD. Skip.
+* TeamCity - not bad, needs server+agent to be up-and-running but "only" uses 2G server + 700mb agent. Pass.
+* [Laminar](https://laminar.ohwg.net/docs.html) - simple and awesome but can't poll git repo periodically.
+   * Maybe a small kotlin-native repo poller which calls `laminarc queue foo`?
+   * Or a [git pulling build bot](https://stackoverflow.com/questions/7166509/how-to-build-a-git-polling-build-bot).
+   * Pass, but later since it needs git build bot.
+
