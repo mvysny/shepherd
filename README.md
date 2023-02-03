@@ -54,7 +54,7 @@ ufw status
 ```
 
 TODO:
-* setup TeamCity or Jenkins
+* setup TeamCity or Jenkins, but not in Docker so that they can access fs, run shepherd-build and run docker commands.
   * max concurrent jobs: 2 or 3, depending on ubuntu memory (2 for 8GB, 3 for 16GB+)
   * max memory 1024m for Maven, 1500m for Gradle.
 * Certbot/Let's Encrypt: https://microk8s.io/docs/addon-cert-manager
