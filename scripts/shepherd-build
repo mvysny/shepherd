@@ -1,0 +1,45 @@
+#!/bin/bash
+set -e -o pipefail
+
+#
+# Builds the project as a docker image and runs it inside Kubernetes. Intended
+# to be called from CI after we have new sources.
+#
+# Accepts the following env variables:
+# - PROJECT_ID: the project id, e.g. vaadin-boot-example-gradle
+# - BUILD_MEMORY: (optional) how much memory the build image will get. Defaults to 1024m
+#
+# Expects:
+# - a k8s resource config file yaml named /etc/vaadin-shepherd/k8s/vaadin-boot-example-gradle.yaml
+#
+# The k8s resource config file should:
+# - be namespaced to shepherd-$PROJECT_ID
+# - include all definitions for pod, service and ingress
+
+if [ -z "${PROJECT_ID}" ]; then
+  echo "PROJECT_ID env variable missing; should be e.g. vaadin-boot-example-gradle"
+  exit 1
+fi
+
+BUILD_MEMORY="${BUILD_MEMORY:-1024m}"
+IMAGE="localhost:32000/shepherd/${PROJECT_ID}"
+
+# 1. build new docker image.
+# optionally, add build args via   --build-arg offlinekey=foo. Then,
+# add the following to your `Dockerfile`: `ARG offlinekey`; `ENV VAADIN_OFFLINE_KEY=$offlinekey`
+# Even simpler: simply add env variables to k8s resource config file.
+docker build --no-cache -t "$IMAGE:latest" -m "$BUILD_MEMORY" --cpu-period 100000 --cpu-quota 200000 .
+# push it to k8s local repository
+docker push "$IMAGE:latest"
+
+
+# 2. Obtain the hash of new image
+IMAGE_AND_HASH=`docker inspect --format='{{index .RepoDigests 0}}' "$IMAGE:latest"`
+# this will produce something like:
+#   localhost:32000/test/vaadin-boot-example-gradle@sha256:62d6de89ced35ed07571fb9190227b08a7a10c80c97eccfa69b1aa5829f44b9a
+echo "Newest image and hash: $IMAGE_AND_HASH"
+
+# 3. generate new k8s resource config and apply.
+cat "/etc/vaadin-shepherd/k8s/${PROJECT_ID}.yaml" | sed "s#<<IMAGE_AND_HASH>>#$IMAGE_AND_HASH#" >"/tmp/${PROJECT_ID}.yaml"
+
+microk8s kubectl apply -f "/tmp/${PROJECT_ID}.yaml"
