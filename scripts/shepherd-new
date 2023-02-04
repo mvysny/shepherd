@@ -1,0 +1,100 @@
+#!/bin/bash
+set -e -o pipefail
+
+K8S=/etc/vaadin-shepherd/k8s
+PROJECT_ID="$1"
+
+if [[ -z "$PROJECT_ID" ]]; then
+        echo "Creates a new basic project configuration."
+        echo
+        echo "Run $0 project_id"
+        exit 1
+fi
+
+if [[ ! -d $K8S ]]; then
+        mkdir -p $K8S
+fi
+
+#
+# creates a k8s resource config yaml file
+#
+K8S_RESOURCE_FILE="$K8S/$PROJECT_ID.yaml"
+
+if [[ -f "$K8S_RESOURCE_FILE" ]]; then
+        echo "$K8S_RESOURCE_FILE already exists"
+        exit 1
+fi
+
+NAMESPACE="shepherd-$PROJECT_ID"
+cat << EOF >"$K8S_RESOURCE_FILE"
+#
+# Vaadin Boot Example Gradle
+#
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: $NAMESPACE
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment
+  namespace: $NAMESPACE
+spec:
+  selector:
+    matchLabels:
+      app: pod
+  template:
+    metadata:
+      labels:
+        app: pod
+    spec:
+      containers:
+      - name: main
+        image: <<IMAGE_AND_HASH>>
+        ports:
+        - containerPort: 8080
+        resources:
+          limits:
+            memory: "256Mi"  # https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+            cpu: 1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service
+  namespace: $NAMESPACE
+spec:
+  selector:
+    app: pod
+  ports:
+    - port: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-main
+  namespace: $NAMESPACE
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /\$3
+    nginx.ingress.kubernetes.io/proxy-cookie-path: / /\$1
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /($PROJECT_ID)(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: service
+                port:
+                  number: 8080
+EOF
+
+echo "microk8s resource config file has been written to $K8S_RESOURCE_FILE"
+echo
+echo "Further steps:"
+echo "1. Create a job in Jenkins. See vaadin-shepherd documentation on exact steps"
+echo "2. Further modify the $K8S_RESOURCE_FILE as necessary"
+echo "3. Do NOT 'mkctl apply -f $K8S_RESOURCE_FILE' by hand since the IMAGE needs to be filled in. The shepherd-build script will do that."
