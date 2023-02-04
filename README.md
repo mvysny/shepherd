@@ -73,6 +73,7 @@ then access Jenkins via [localhost:8080](http://localhost:8080), then
 
 * Disable all plugins except "Build Timeout", "Timestamper", "Git" and "Matrix Authorization Strategy".
 * Create the `admin` user, with the password `admin`. This is okay since we'll need ssh port-forwarding to access Jenkins anyway.
+* Set # of concurrent jobs: 2 or 3, depending on ubuntu memory (2 for 8GB, 3 for 16GB+)
 
 ### Docker
 
@@ -112,10 +113,7 @@ $ ufw status
 ```
 
 TODO:
-* setup TeamCity or Jenkins, but not in Docker so that they can access fs, run shepherd-build and run docker commands.
-  * Try Jenkins first, [as a linux service](https://www.jenkins.io/doc/book/installing/linux/); TODO set memory to 2GB
-  * max concurrent jobs: 2 or 3, depending on ubuntu memory (2 for 8GB, 3 for 16GB+)
-  * max memory 1024m for Maven, 1500m for Gradle.
+
 * Certbot/Let's Encrypt: https://microk8s.io/docs/addon-cert-manager
 * Copy `scripts/` somewhere on the fs
 
