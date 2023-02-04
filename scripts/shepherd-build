@@ -1,12 +1,15 @@
 #!/bin/bash
 set -e -o pipefail
 
+PROJECT_ID=$1
 #
 # Builds the project as a docker image and runs it inside Kubernetes. Intended
 # to be called from CI after we have new sources.
 #
+# Accepts parameters:
+# - the project id, e.g. vaadin-boot-example-gradle
+#
 # Accepts the following env variables:
-# - PROJECT_ID: the project id, e.g. vaadin-boot-example-gradle
 # - BUILD_MEMORY: (optional) how much memory the build image will get. Defaults to 1024m
 #
 # Expects:
@@ -17,7 +20,9 @@ set -e -o pipefail
 # - include all definitions for pod, service and ingress
 
 if [ -z "${PROJECT_ID}" ]; then
-  echo "PROJECT_ID env variable missing; should be e.g. vaadin-boot-example-gradle"
+  echo "project_id missing; should be e.g. vaadin-boot-example-gradle"
+  echo
+  echo "Use: $0 project_id"
   exit 1
 fi
 

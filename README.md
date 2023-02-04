@@ -147,23 +147,56 @@ which means that the project ID must:
 * start with an alphanumeric character
 * end with an alphanumeric character
 
-Now create the project's k8s resource config file yaml named `/etc/vaadin-shepherd/k8s/PROJECT_ID.yaml`.
-Don't forget to use the `shepherd-PROJECT_ID` namespace. TODO use `shepherd-new` script to create a new yaml for you.
-Since all project has its own namespace, the k8s resource names can simply always be "deployment", "service", "pod", "ingress-global", "ingress-host".
+Now call `shepherd-new vaadin-boot-example-gradle` to create the project's k8s
+resource config file yaml (named `/etc/vaadin-shepherd/k8s/PROJECT_ID.yaml`).
+See chapter below on tips on k8s yaml contents, for mem/cpu, env variables, database, Vaadin monitoring, persistent storage, ...
 
-* That solves runtime config: mem, cpu, env variables, but also database, Vaadin monitoring, persistent storage, ...
-* Builder will copy the resource yaml, modify image hash, then `mkctl apply -f`.
+Now, create the Jenkins job:
 
-TODO create `shepherd-new` script which creates a new yaml for you, then
-tell me next steps: to create the build pipeline in the CI which runs `shepherd-build`.
+* New Item, "vaadin-boot-example-gradle", Freestyle project, OK.
+* Discard old builds, Max # of builds to keep=3
+* Poll SCM with schedule `H/5 * * * *`
+* Build Environment: Add timestamps to the Console Output
+* Execute shell: `/opt/vaadin-shepherd/shepherd-build vaadin-boot-example-gradle`
+* Save, Build Now
 
-Add a job to teamcity. git-clone a project, then run `shepherd-build` on it. `shepherd-build` expects the following
-env variables:
+The `shepherd-build` builder will copy the resource yaml, modify image hash, then `mkctl apply -f`.
 
-* `PROJECT_ID`: the project id, e.g. `vaadin-boot-example-gradle`
+Optionally, add the following env variables to the `shepherd-build`:
+
 * `BUILD_MEMORY`: (optional) how much memory the build image will get. Defaults to `1024m`, but for Gradle use `1500m`
 
 Doesn't accept buildargs, but the ENV variables can be defined directly in k8s resource yaml.
+
+### k8s resource file contents tips
+
+* Don't forget to use the `shepherd-PROJECT_ID` namespace.
+* Since all projects have their own namespace, the k8s resource names can simply
+  always be "deployment", "service", "pod", "ingress-global", "ingress-host".
+* To modify mem/cpu resource limits, edit the yaml file Deployment part, the `spec.template.spec.containers[0].resources.limits` part
+
+TODO env variables, database, Vaadin monitoring, persistent storage, ...
+
+To expose a project on additional DNS domain, add:
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-custom-dns-vaadin3-fake
+  namespace: $NAMESPACE    # use proper namespace!
+spec:
+  rules:
+    - host: "vaadin3.fake"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: service
+                port:
+```
 
 ## Removing a project
 
