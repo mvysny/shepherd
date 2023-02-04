@@ -1,6 +1,6 @@
 # vaadin-shepherd2
 
-Next attempt on Vaadin-Shepherd, built with off-the-shelf tools. Serves as a replacement
+Next attempt on Shepherd, built with off-the-shelf tools. Serves as a replacement
 for Heroku, to publish your own stuff.
 
 See the [previous Vaadin Shepherd](https://gitlab.vaadin.com/mavi/vaadin-shepherd).
@@ -12,7 +12,7 @@ Uses components:
 * A VM with Ubuntu
 * microk8s for keeping containers up-and-running, replaces nginx with ingress,
   contains logs, gathers metrics (CPU/Memory).
-* TeamCity pulls git link periodically, then calls `shepherd-build` which builds new docker image, uploads to microk8s registry and restarts pods.
+* Jenkins pulls git link periodically, then calls `shepherd-build` which builds new docker image, uploads to microk8s registry and restarts pods.
 * no need for CD atm.
 
 Shepherd expects the following from your project:
