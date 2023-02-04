@@ -31,11 +31,71 @@ Generally you place an appropriate `Dockerfile` to the root of your repository. 
 ## Installing
 
 Get a VM with 8 GB of RAM and Ubuntu x86-64, the newer the better. ssh into the machine as root & update.
-Once you're in, we'll install and configure microk8s
+Once you're in, we'll install and configure microk8s and jenkins.
+
+First, install a bunch of useful utility stuff, then enter byobu:
+```bash
+$ apt install byobu snap curl vim
+$ byobu
+$ sudo update-alternatives --config editor     # select vim.basic
+```
+
+Then, setup firewall, to shield ourselves during the followup installations steps. For example, Jenkins
+by default listens on all interfaces - we don't want that:
 
 ```bash
-$ apt install byobu snap openjdk-11-jre
-$ byobu
+$ ufw allow ssh
+$ ufw enable
+$ ufw status
+```
+
+### Jenkins
+
+First, install Java since Jenkins depends on it:
+```bash
+$ apt install openjdk-11-jre
+```
+Then, [Install Jenkins on Linux](https://www.jenkins.io/doc/book/installing/linux/), the LTS version via apt.
+
+Check log to see that everything is okay: `journalctl -u jenkins`, `journalctl -u jenkins -f`.
+Now, edit Jenkins config file via `systemctl edit jenkins` and add the following:
+```
+[Service]
+Environment="JENKINS_LISTEN_ADDRESS=127.0.0.1"
+Environment="JAVA_OPTS=-Djava.awt.headless=true -Xmx512m"
+```
+
+Restart Jenkins via `systemctl restart jenkins`.
+
+ssh to the machine via `ssh -L 127.0.0.1:8080:localhost:8080 root@xyz`,
+then access Jenkins via [localhost:8080](http://localhost:8080), then
+[Configure Jenkins](https://www.jenkins.io/doc/book/installing/linux/#unlocking-jenkins): 
+
+* Disable all plugins except "Build Timeout", "Timestamper", "Git" and "Matrix Authorization Strategy".
+* Create the `admin` user, with the password `admin`. This is okay since we'll need ssh port-forwarding to access Jenkins anyway.
+
+### Docker
+
+Then, install docker and add permissions to the Jenkins user to run it:
+
+```bash
+$ apt install docker.io
+$ usermod -aG docker jenkins
+$ reboot
+```
+
+Verify that you can build a project in Jenkins:
+
+* New Item, "vaadin-boot-example-gradle", Freestyle project, OK.
+* Discard old builds, Max # of builds to keep=3
+* Poll SCM with schedule `H/5 * * * *`
+* Build Environment: Add timestamps to the Console Output
+* Execute shell: `docker build --no-cache -t "test/test:latest" -m 1500m --cpu-period 100000 --cpu-quota 200000 .`
+* Save, Build Now
+
+### Microk8s
+
+```bash
 $ snap install microk8s --classic
 $ microk8s enable dashboard dns registry ingress
 ```
@@ -45,12 +105,10 @@ Enable the dashboard, dns, registry and ingress modules according to [Playing wi
 Now, setup firewall:
 
 ```bash
-ufw allow ssh
-ufw allow in on cni0
-ufw allow out on cni0
-ufw default allow routed
-ufw enable
-ufw status
+$ ufw allow in on cni0
+$ ufw allow out on cni0
+$ ufw default allow routed
+$ ufw status
 ```
 
 TODO:
