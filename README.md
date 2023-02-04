@@ -1,7 +1,8 @@
-# vaadin-shepherd2
+# Shepherd
 
-Next attempt on Shepherd, built with off-the-shelf tools. Serves as a replacement
-for Heroku, to publish your own stuff.
+Builds given git repos periodically and automatically deploys them to a Kubernetes cluster.
+Serves as a homebrew "replacement" for Heroku, to publish your own stuff.
+Built with off-the-shelf tools.
 
 See the [previous Vaadin Shepherd](https://gitlab.vaadin.com/mavi/vaadin-shepherd).
 
