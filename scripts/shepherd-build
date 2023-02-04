@@ -19,10 +19,17 @@ PROJECT_ID=$1
 # - be namespaced to shepherd-$PROJECT_ID
 # - include all definitions for pod, service and ingress
 
-if [ -z "${PROJECT_ID}" ]; then
+if [[ -z "${PROJECT_ID}" ]]; then
   echo "project_id missing; should be e.g. vaadin-boot-example-gradle"
   echo
   echo "Use: $0 project_id"
+  exit 1
+fi
+
+K8S_RESOURCE_CONFIG_FILE="/etc/shepherd/k8s/${PROJECT_ID}.yaml"
+
+if [[ ! -f "$K8S_RESOURCE_CONFIG_FILE" ]]; then
+  echo "$K8S_RESOURCE_CONFIG_FILE does not exist"
   exit 1
 fi
 
@@ -34,8 +41,10 @@ IMAGE="localhost:32000/shepherd/${PROJECT_ID}"
 # add the following to your `Dockerfile`: `ARG offlinekey`; `ENV VAADIN_OFFLINE_KEY=$offlinekey`
 # Even simpler: simply add env variables to k8s resource config file.
 # Uses 2 CPUs per build to speed things up.
+echo "Building image $IMAGE"
 docker build --no-cache -t "$IMAGE:latest" -m "$BUILD_MEMORY" --cpu-period 100000 --cpu-quota 200000 .
 # push it to k8s local repository
+echo "Pushing image $IMAGE to k8s local repository"
 docker push "$IMAGE:latest"
 
 
@@ -48,4 +57,5 @@ echo "Newest image and hash: $IMAGE_AND_HASH"
 # 3. generate new k8s resource config and apply.
 cat "/etc/shepherd/k8s/${PROJECT_ID}.yaml" | sed "s#<<IMAGE_AND_HASH>>#$IMAGE_AND_HASH#" >"/tmp/${PROJECT_ID}.yaml"
 
+echo "Applying new k8s resource config file"
 microk8s kubectl apply -f "/tmp/${PROJECT_ID}.yaml"
