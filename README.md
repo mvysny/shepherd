@@ -204,6 +204,20 @@ spec:
 * Remove CI pipeline by hand
 * run `mkctl delete -f /etc/shepherd/k8s/PROJECT_ID.yaml`
 
+## Shepherd Administration
+
+ssh to the machine with proper port forwarding:
+
+```bash
+$ ssh -L localhost:8080:localhost:8080 -L localhost:10443:localhost:10443 root@xyz
+$ microk8s dashboard-proxy
+```
+
+Browse:
+
+* Jenkins: [localhost:8080](http://localhost:8080)
+* Microk8s: [localhost:10443](http://localhost:10443)
+
 # Misc
 
 ## Configuration
