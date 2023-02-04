@@ -25,9 +25,9 @@ Shepherd expects the following from your project:
 
 Generally you place an appropriate `Dockerfile` to the root of your repository. See the following projects for an example:
 
-1. Gradle+Embedded Jetty: [vaadin-embedded-jetty-gradle](https://github.com/mvysny/vaadin-embedded-jetty-gradle), [vaadin14-embedded-jetty-gradle](https://github.com/mvysny/vaadin14-embedded-jetty-gradle)
-2. Maven+Embedded Jetty: [vaadin-embedded-jetty](https://github.com/mvysny/vaadin-embedded-jetty)
-3. Gradle+WAR+Tomcat: [karibu10-helloworld-application](https://github.com/mvysny/karibu10-helloworld-application), [beverage-buddy-vok](https://github.com/mvysny/beverage-buddy-vok), [vok-security-demo](https://github.com/mvysny/vok-security-demo)
+1. Gradle+Embedded Jetty: [vaadin-embedded-jetty-gradle](https://github.com/mvysny/vaadin-embedded-jetty-gradle), [vaadin14-embedded-jetty-gradle](https://github.com/mvysny/vaadin14-embedded-jetty-gradle),
+   [karibu-helloworld-application](https://github.com/mvysny/karibu-helloworld-application), [beverage-buddy-vok](https://github.com/mvysny/beverage-buddy-vok), [vok-security-demo](https://github.com/mvysny/vok-security-demo)
+2. Maven+Embedded Jetty: [vaadin-embedded-jetty-maven](https://github.com/mvysny/vaadin-embedded-jetty-maven)
 
 ## Installing
 
