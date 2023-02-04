@@ -13,7 +13,7 @@ PROJECT_ID=$1
 # - BUILD_MEMORY: (optional) how much memory the build image will get. Defaults to 1024m
 #
 # Expects:
-# - a k8s resource config file yaml named /etc/vaadin-shepherd/k8s/vaadin-boot-example-gradle.yaml
+# - a k8s resource config file yaml named /etc/shepherd/k8s/vaadin-boot-example-gradle.yaml
 #
 # The k8s resource config file should:
 # - be namespaced to shepherd-$PROJECT_ID
@@ -46,6 +46,6 @@ IMAGE_AND_HASH=`docker inspect --format='{{index .RepoDigests 0}}' "$IMAGE:lates
 echo "Newest image and hash: $IMAGE_AND_HASH"
 
 # 3. generate new k8s resource config and apply.
-cat "/etc/vaadin-shepherd/k8s/${PROJECT_ID}.yaml" | sed "s#<<IMAGE_AND_HASH>>#$IMAGE_AND_HASH#" >"/tmp/${PROJECT_ID}.yaml"
+cat "/etc/shepherd/k8s/${PROJECT_ID}.yaml" | sed "s#<<IMAGE_AND_HASH>>#$IMAGE_AND_HASH#" >"/tmp/${PROJECT_ID}.yaml"
 
 microk8s kubectl apply -f "/tmp/${PROJECT_ID}.yaml"

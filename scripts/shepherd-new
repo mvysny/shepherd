@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e -o pipefail
 
-K8S=/etc/vaadin-shepherd/k8s
+K8S=/etc/shepherd/k8s
 PROJECT_ID="$1"
 
 if [[ -z "$PROJECT_ID" ]]; then
@@ -95,6 +95,6 @@ EOF
 echo "microk8s resource config file has been written to $K8S_RESOURCE_FILE"
 echo
 echo "Further steps:"
-echo "1. Create a job in Jenkins. See vaadin-shepherd documentation on exact steps"
+echo "1. Create a job in Jenkins. See https://github.com/mvysny/shepherd#adding-a-project for exact steps"
 echo "2. Further modify the $K8S_RESOURCE_FILE as necessary"
 echo "3. Do NOT 'mkctl apply -f $K8S_RESOURCE_FILE' by hand since the IMAGE needs to be filled in. The shepherd-build script will do that."

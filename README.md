@@ -134,7 +134,7 @@ TODO:
 
 ### Shepherd
 
-Copy scripts from `scripts/` to `/opt/vaadin-shepherd/`.
+Copy scripts from `scripts/` to `/opt/shepherd/`.
 Everything is now configured.
 
 ## Adding a project
@@ -149,7 +149,7 @@ which means that the project ID must:
 * end with an alphanumeric character
 
 Now call `shepherd-new vaadin-boot-example-gradle` to create the project's k8s
-resource config file yaml (named `/etc/vaadin-shepherd/k8s/PROJECT_ID.yaml`).
+resource config file yaml (named `/etc/shepherd/k8s/PROJECT_ID.yaml`).
 See chapter below on tips on k8s yaml contents, for mem/cpu, env variables, database, Vaadin monitoring, persistent storage, ...
 
 Now, create the Jenkins job:
@@ -158,7 +158,7 @@ Now, create the Jenkins job:
 * Discard old builds, Max # of builds to keep=3
 * Poll SCM with schedule `H/5 * * * *`
 * Build Environment: Add timestamps to the Console Output
-* Execute shell: `/opt/vaadin-shepherd/shepherd-build vaadin-boot-example-gradle`
+* Execute shell: `/opt/shepherd/shepherd-build vaadin-boot-example-gradle`
 * Save, Build Now
 
 The `shepherd-build` builder will copy the resource yaml, modify image hash, then `mkctl apply -f`.
@@ -202,7 +202,7 @@ spec:
 ## Removing a project
 
 * Remove CI pipeline by hand
-* run `mkctl delete -f /etc/vaadin-shepherd/k8s/PROJECT_ID.yaml`
+* run `mkctl delete -f /etc/shepherd/k8s/PROJECT_ID.yaml`
 
 # Misc
 
