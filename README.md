@@ -96,26 +96,45 @@ Verify that you can build a project in Jenkins:
 
 ### Microk8s
 
+Install microk8s:
 ```bash
 $ snap install microk8s --classic
-$ microk8s enable dashboard dns registry ingress
 ```
 
-Enable the dashboard, dns, registry and ingress modules according to [Playing with Kubernetes](https://mvysny.github.io/playing-with-kubernetes/)
-
-Now, setup firewall:
+Setup firewall:
 
 ```bash
 $ ufw allow in on cni0
 $ ufw allow out on cni0
 $ ufw default allow routed
+$ ufw allow http https
 $ ufw status
 ```
+
+Install more stuff to microk8s and setup user access:
+
+```
+$ microk8s enable dashboard dns registry ingress
+$ usermod -aG microk8s jenkins
+```
+
+Verify that microk8s is running:
+```
+$ microk8s dashboard-proxy
+```
+
+(More commands & info at [Playing with Kubernetes](https://mvysny.github.io/playing-with-kubernetes/) ).
+
+Reboot.
 
 TODO:
 
 * Certbot/Let's Encrypt: https://microk8s.io/docs/addon-cert-manager
-* Copy `scripts/` somewhere on the fs
+
+### Shepherd
+
+Copy scripts from `scripts/` to `/opt/vaadin-shepherd/`.
+Everything is now configured.
 
 ## Adding a project
 
