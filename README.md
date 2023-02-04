@@ -31,8 +31,8 @@ Generally you place an appropriate `Dockerfile` to the root of your repository. 
 
 ## Installing
 
-Get a VM with 8 GB of RAM and Ubuntu x86-64, the newer the better. ssh into the machine as root & update.
-Once you're in, we'll install and configure microk8s and jenkins.
+Get a VM with 8 GB of RAM and Ubuntu x86-64, the newer Ubuntu the better, preferably 22.04.
+ssh into the machine as root & update. Once you're in, we'll install and configure microk8s and jenkins.
 
 First, install a bunch of useful utility stuff, then enter byobu:
 ```bash
