@@ -134,7 +134,7 @@ TODO:
 
 ### Shepherd
 
-Run:
+To install Shepherd scripts, run:
 
 ```bash
 $ cd /opt && sudo git clone https://github.com/mvysny/shepherd
