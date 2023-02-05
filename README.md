@@ -134,8 +134,16 @@ TODO:
 
 ### Shepherd
 
-Copy scripts from `scripts/` to `/opt/shepherd/`.
-Everything is now configured.
+Run:
+
+```bash
+$ cd /opt && sudo git clone https://github.com/mvysny/shepherd
+```
+Everything is now configured. To update Shepherd scripts, simply run
+
+```bash
+$ cd /opt/shepherd && sudo git pull --rebase
+```
 
 ## Adding a project
 
