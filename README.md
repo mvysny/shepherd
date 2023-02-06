@@ -86,15 +86,6 @@ $ usermod -aG docker jenkins
 $ reboot
 ```
 
-Verify that you can build a project in Jenkins:
-
-* New Item, "vaadin-boot-example-gradle", Freestyle project, OK.
-* Discard old builds, Max # of builds to keep=3
-* Poll SCM with schedule `H/5 * * * *`
-* Build Environment: Add timestamps to the Console Output
-* Execute shell: `docker build --no-cache -t "test/test:latest" -m 1500m --cpu-period 100000 --cpu-quota 200000 .`
-* Save, Build Now
-
 ### Microk8s
 
 Install microk8s:
