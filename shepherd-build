@@ -59,3 +59,8 @@ cat "/etc/shepherd/k8s/${PROJECT_ID}.yaml" | sed "s#<<IMAGE_AND_HASH>>#$IMAGE_AN
 
 echo "Applying new k8s resource config file"
 microk8s kubectl apply -f "/tmp/${PROJECT_ID}.yaml"
+
+# 4. delete the local docker image. The image is obsolete now since Kubernetes will use the one
+# that has been uploaded to its registry.
+echo "Deleting local docker image $IMAGE"
+docker image rm "$IMAGE"
