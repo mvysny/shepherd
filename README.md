@@ -36,7 +36,8 @@ ssh into the machine as root & update. Once you're in, we'll install and configu
 
 First, install a bunch of useful utility stuff, then enter byobu:
 ```bash
-$ apt install byobu snap curl vim
+$ apt update && apt -V dist-upgrade
+$ apt install byobu snapd curl vim
 $ byobu
 $ sudo update-alternatives --config editor     # select vim.basic
 ```
