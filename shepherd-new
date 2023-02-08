@@ -77,7 +77,6 @@ metadata:
   name: ingress-main
   namespace: $NAMESPACE
   annotations:
-    kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/rewrite-target: /\$3
     nginx.ingress.kubernetes.io/proxy-cookie-path: / /\$1
     nginx.ingress.kubernetes.io/configuration-snippet: |

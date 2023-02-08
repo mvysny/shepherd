@@ -37,7 +37,7 @@ ssh into the machine as root & update. Once you're in, we'll install and configu
 First, install a bunch of useful utility stuff, then enter byobu:
 ```bash
 $ apt update && apt -V dist-upgrade
-$ apt install byobu snapd curl vim
+$ apt install byobu snapd curl vim fish
 $ byobu
 $ sudo update-alternatives --config editor     # select vim.basic
 ```
@@ -130,9 +130,14 @@ Anywhere (v6)              ALLOW OUT   Anywhere (v6) on cali+
 Install more stuff to microk8s and setup user access:
 
 ```
-$ microk8s enable dashboard dns registry ingress
+$ microk8s enable dashboard
+$ microk8s enable dns
+$ microk8s enable registry
+$ microk8s enable ingress
 $ usermod -aG microk8s jenkins
 ```
+
+Add `alias mkctl="microk8s kubectl"` to `~/.config/fish/config.fish`
 
 Verify that microk8s is running:
 ```
@@ -242,6 +247,18 @@ Browse:
 * Microk8s: [localhost:10443](http://localhost:10443)
 
 # Misc
+
+## Troubleshooting
+
+If you browse to the app, and you'll get nginx 404:
+
+* Go to [Kubernetes Dashboard: Ingress](https://127.0.0.1:10443/#/ingress?namespace=_all) and make sure `Endpoints` shows `127.0.0.1`
+  * If it doesn't, remove `kubernetes.io/ingress.class: nginx` from your ingress yaml, remove the ingress rule and add it back.
+
+If you browse to the app, you'll wait and then you'll get nginx 504:
+
+* Try disabling `ufw` whether it helps.
+  * If yes, try `ufw disable && ufw reset`, then re-add all rules back, then `ufw enable`.
 
 ## Configuration
 
