@@ -69,7 +69,7 @@ Environment="JAVA_OPTS=-Djava.awt.headless=true -Xmx512m"
 
 Restart Jenkins via `systemctl restart jenkins`.
 
-ssh to the machine via `ssh -L 127.0.0.1:8080:localhost:8080 root@xyz`,
+ssh to the machine via `ssh -L localhost:8080:localhost:8080 -L localhost:10443:localhost:10443 root@xyz`,
 then access Jenkins via [localhost:8080](http://localhost:8080), then
 [Configure Jenkins](https://www.jenkins.io/doc/book/installing/linux/#unlocking-jenkins): 
 
@@ -100,8 +100,31 @@ Setup firewall:
 $ ufw allow in on cni0
 $ ufw allow out on cni0
 $ ufw default allow routed
-$ ufw allow http https
+$ ufw allow http
+$ ufw allow https
 $ ufw status
+Status: active
+
+To                         Action      From
+--                         ------      ----
+22/tcp                     ALLOW       Anywhere                  
+Anywhere on vxlan.calico   ALLOW       Anywhere                  
+Anywhere on cali+          ALLOW       Anywhere                  
+Anywhere on cni0           ALLOW       Anywhere                  
+80/tcp                     ALLOW       Anywhere                  
+443                        ALLOW       Anywhere                  
+22/tcp (v6)                ALLOW       Anywhere (v6)             
+Anywhere (v6) on vxlan.calico ALLOW       Anywhere (v6)             
+Anywhere (v6) on cali+     ALLOW       Anywhere (v6)             
+Anywhere (v6) on cni0      ALLOW       Anywhere (v6)             
+80/tcp (v6)                ALLOW       Anywhere (v6)             
+443 (v6)                   ALLOW       Anywhere (v6)             
+
+Anywhere                   ALLOW OUT   Anywhere on vxlan.calico  
+Anywhere                   ALLOW OUT   Anywhere on cali+         
+Anywhere                   ALLOW OUT   Anywhere on cni0          
+Anywhere (v6)              ALLOW OUT   Anywhere (v6) on vxlan.calico
+Anywhere (v6)              ALLOW OUT   Anywhere (v6) on cali+    
 ```
 
 Install more stuff to microk8s and setup user access:
