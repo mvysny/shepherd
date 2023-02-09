@@ -51,13 +51,13 @@ spec:
     - v-herd.eu
     secretName: v-herd-eu-ingress-tls
   rules:
-    - host: v-herd.eu
-      http:
-        paths:
-          - path: /
-            pathType: Exact
-            backend:
-              service:
-                name: service
-                port:
-                  number: 80
+  - host: v-herd.eu
+    http:
+      paths:
+        - path: /
+          pathType: Exact
+          backend:
+            service:
+              name: service
+              port:
+                number: 80
