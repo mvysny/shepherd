@@ -217,7 +217,7 @@ which means that the project ID must:
 * start with an alphanumeric character
 * end with an alphanumeric character
 
-Now call `shepherd-new vaadin-boot-example-gradle` to create the project's k8s
+Now call `shepherd-new vaadin-boot-example-gradle 256Mi` to create the project's k8s
 resource config file yaml (named `/etc/shepherd/k8s/PROJECT_ID.yaml`).
 See chapter below on tips on k8s yaml contents, for mem/cpu, env variables, database, Vaadin monitoring, persistent storage, ...
 
