@@ -133,7 +133,7 @@ Install more stuff to microk8s and setup user access:
 $ microk8s enable dashboard
 $ microk8s enable dns
 $ microk8s enable registry
-$ microk8s enable ingress
+$ microk8s enable ingress:default-ssl-certificate=v-herd-eu-welcome-page/v-herd-eu-ingress-tls
 $ usermod -aG microk8s jenkins
 ```
 
@@ -148,7 +148,20 @@ $ microk8s dashboard-proxy
 
 Reboot.
 
-### HTTPS/SSL
+### Shepherd
+
+To install Shepherd scripts, run:
+
+```bash
+$ cd /opt && sudo git clone https://github.com/mvysny/shepherd
+```
+Everything is now configured. To update Shepherd scripts, simply run
+
+```bash
+$ cd /opt/shepherd && sudo git pull --rebase
+```
+
+### Enabling HTTPS/SSL
 
 Follow the Certbot/Let's Encrypt: https://microk8s.io/docs/addon-cert-manager tutorial.
 The tutorial doesn't explain much, but it definitely works. Explanation here:
@@ -188,21 +201,11 @@ $ mkctl apply -f welcome-page.yaml
 
 After a while, https should start working; test it out [https://v-herd.eu](https://v-herd.eu).
 
-We'll now add the `--v-herd-eu-welcome-page/v-herd-eu-ingress-tls` in the `nginx-controller` deployment.
-TODO how.
+We already registered the `--default-ssl-certificate=v-herd-eu-welcome-page/v-herd-eu-ingress-tls` option in the `nginx-controller` deployment,
+when we enabled `ingress` above. You can verify that the configuration took effect, by
+taking a look at the ` nginx-ingress-microk8s-controller` DaemonSet in microk8s Dashboard.
 
-### Shepherd
-
-To install Shepherd scripts, run:
-
-```bash
-$ cd /opt && sudo git clone https://github.com/mvysny/shepherd
-```
-Everything is now configured. To update Shepherd scripts, simply run
-
-```bash
-$ cd /opt/shepherd && sudo git pull --rebase
-```
+TODO change app templates to take advantage of the default certificate.
 
 ## Adding a project
 
