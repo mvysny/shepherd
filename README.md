@@ -302,7 +302,7 @@ If you browse to the app, you'll wait and then you'll get nginx 504:
 
 ## Configuration
 
-Configuration: Every project has its own set of configuration files (perhaps committed to git?):
+Configuration: Every project has its k8s resource configuration file in `/etc/shepherd/k8s/`:
 
 * microk8s: resource config yaml, defining:
    * routing/ingress/hostnames
