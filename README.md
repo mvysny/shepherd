@@ -277,6 +277,7 @@ ssh to the machine with proper port forwarding:
 
 ```bash
 $ ssh -L localhost:8080:localhost:8080 -L localhost:10443:localhost:10443 root@xyz
+$ byobu
 $ microk8s dashboard-proxy
 ```
 
