@@ -3,6 +3,8 @@ set -e -o pipefail
 
 echo "### Setting up Microk8s"
 snap install microk8s --classic
+
+echo "### Enabling Microk8s Addons"
 microk8s enable dashboard
 microk8s enable dns
 microk8s enable registry
