@@ -204,8 +204,6 @@ We already registered the `--default-ssl-certificate=v-herd-eu-welcome-page/v-he
 when we enabled `ingress` above. You can verify that the configuration took effect, by
 taking a look at the ` nginx-ingress-microk8s-controller` DaemonSet in microk8s Dashboard.
 
-TODO change app templates to take advantage of the default certificate.
-
 ## Adding a project
 
 First, decide on the project id, e.g. `vaadin-boot-example-gradle`. The project ID will go into k8s namespace;
