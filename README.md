@@ -299,7 +299,8 @@ If you browse to the app, and you'll get nginx 404:
 If you browse to the app, you'll wait and then you'll get nginx 504:
 
 * Try disabling `ufw` whether it helps.
-  * If yes, try `ufw disable && ufw reset`, then re-add all rules back, then `ufw enable`.
+  * If yes, try to enable the firewall back `ufw enable` and browse the app again - this usually helps.
+  * If that doesn't help, try `ufw disable && ufw reset`, then re-add all rules back, then `ufw enable`.
 
 ## Configuration
 
