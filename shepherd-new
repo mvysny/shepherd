@@ -7,13 +7,12 @@ PROJECT_ID="$1"
 if [[ -z "$PROJECT_ID" ]]; then
         echo "Creates a new basic project configuration."
         echo
-        echo "Run $0 project_id"
+        echo "Run $0 project_id [dns]"
         exit 1
 fi
 
-if [[ ! -d $K8S ]]; then
-        mkdir -p $K8S
-fi
+DNS="$2"
+DNS="${DNS:-v-herd.eu}"
 
 #
 # creates a k8s resource config yaml file
@@ -21,11 +20,20 @@ fi
 K8S_RESOURCE_FILE="$K8S/$PROJECT_ID.yaml"
 
 if [[ -f "$K8S_RESOURCE_FILE" ]]; then
-        echo "$K8S_RESOURCE_FILE already exists"
-        exit 1
+  echo "$K8S_RESOURCE_FILE already exists"
+  exit 1
 fi
 
 NAMESPACE="shepherd-$PROJECT_ID"
+
+echo "Creating project $PROJECT_ID in $K8S_RESOURCE_FILE"
+echo "Namespace: $NAMESPACE"
+echo "DNS: $DNS"
+
+if [[ ! -d $K8S ]]; then
+  mkdir -p $K8S
+fi
+
 cat << EOF >"$K8S_RESOURCE_FILE"
 #
 # Vaadin Boot Example Gradle
@@ -82,8 +90,12 @@ metadata:
     nginx.ingress.kubernetes.io/configuration-snippet: |
       rewrite ^(/$PROJECT_ID)\$ \$1/ permanent;
 spec:
+  tls:
+  - hosts:
+    - $DNS
   rules:
-    - http:
+    - host: $DNS
+      http:
         paths:
           - path: /($PROJECT_ID)(/|$)(.*)
             pathType: Prefix
