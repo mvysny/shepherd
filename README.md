@@ -152,10 +152,30 @@ Reboot.
 
 Follow the Certbot/Let's Encrypt: https://microk8s.io/docs/addon-cert-manager tutorial.
 The tutorial doesn't explain much, but it definitely works. Explanation here:
-[Let's Encrypt HTTPS/SSL for Microk8s](https://mvysny.github.io/microk8s-lets-encrypt/).
+[Let's Encrypt HTTPS/SSL for Microk8s](https://mvysny.github.io/microk8s-lets-encrypt/):
 
-Open issue: having one secret shared across multiple namespaces, so that
-TODO https://cert-manager.io/docs/tutorials/syncing-secrets-across-namespaces/
+```yaml
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: lets-encrypt
+spec:
+  acme:
+    email: my-email
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      # Secret resource that will be used to store the account's private key.
+      name: letsencrypt-account-key
+    # Add a single challenge solver, HTTP01 using nginx
+    solvers:
+      - http01:
+          ingress:
+            class: public
+```
+
+We need to share one secret for `v-herd.eu` across multiple namespaces (multiple apps
+mapping via ingress to `https://v-herd.eu/app1`. All solutions are at
+[Cert Manager: syncing secrets across namespaces](https://cert-manager.io/docs/tutorials/syncing-secrets-across-namespaces/)
 
 We'll solve this by reconfiguring the [Nginx default certificate](https://kubernetes.github.io/ingress-nginx/user-guide/tls/#default-ssl-certificate).
 First we'll create a simple static webpage which makes CertManager
