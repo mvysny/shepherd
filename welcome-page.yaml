@@ -47,11 +47,12 @@ metadata:
     cert-manager.io/cluster-issuer: lets-encrypt
 spec:
   tls:
-    - hosts:
-      - v-herd.eu
-      secretName: v-herd-eu-ingress-tls
+  - hosts:
+    - v-herd.eu
+    secretName: v-herd-eu-ingress-tls
   rules:
-    - http:
+    - host: v-herd.eu
+      http:
         paths:
           - path: /
             pathType: Exact
