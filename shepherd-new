@@ -7,11 +7,15 @@ PROJECT_ID="$1"
 if [[ -z "$PROJECT_ID" ]]; then
         echo "Creates a new basic project configuration."
         echo
-        echo "Run $0 project_id [dns]"
+        echo "Run $0 project_id [max_memory] [dns]"
+        echo "  - max_memory: for example 256Mi"
+        echo "  - dns: for example yourdomain.com"
         exit 1
 fi
 
-DNS="$2"
+MAX_MEMORY="$2"
+MAX_MEMORY="${MAX_MEMORY:-256Mi}"
+DNS="$3"
 DNS="${DNS:-v-herd.eu}"
 
 #
@@ -29,6 +33,7 @@ NAMESPACE="shepherd-$PROJECT_ID"
 echo "Creating project $PROJECT_ID in $K8S_RESOURCE_FILE"
 echo "Namespace: $NAMESPACE"
 echo "DNS: $DNS"
+echo "Max. memory: $MAX_MEMORY"
 
 if [[ ! -d $K8S ]]; then
   mkdir -p $K8S
@@ -64,8 +69,11 @@ spec:
         ports:
         - containerPort: 8080
         resources:
+          requests:
+            memory: "64Mi"
+            cpu: 0
           limits:
-            memory: "256Mi"  # https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+            memory: "$MAX_MEMORY"  # https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
             cpu: 1
 ---
 apiVersion: v1
