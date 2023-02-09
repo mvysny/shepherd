@@ -41,7 +41,7 @@ fi
 
 cat << EOF >"$K8S_RESOURCE_FILE"
 #
-# Vaadin Boot Example Gradle
+# Microk8s resource config file for $PROJECT_ID
 #
 
 apiVersion: v1
