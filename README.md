@@ -134,6 +134,7 @@ $ microk8s enable dashboard
 $ microk8s enable dns
 $ microk8s enable registry
 $ microk8s enable ingress:default-ssl-certificate=v-herd-eu-welcome-page/v-herd-eu-ingress-tls
+$ microk8s enable cert-manager
 $ usermod -aG microk8s jenkins
 ```
 
@@ -145,8 +146,6 @@ $ microk8s dashboard-proxy
 ```
 
 (More commands & info at [Playing with Kubernetes](https://mvysny.github.io/playing-with-kubernetes/) ).
-
-Reboot.
 
 ### Shepherd
 
