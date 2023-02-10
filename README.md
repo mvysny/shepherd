@@ -296,7 +296,7 @@ If you browse to the app, and you'll get nginx 404:
   * If it doesn't, remove `kubernetes.io/ingress.class: nginx` from your ingress yaml, remove the ingress rule via `mkctl delete -f` and add it back.
   * Then, wait a bit - the ingress rule starts with empty endpoint but should set itself to `127.0.0.1` in a couple of seconds.
 
-If you browse to the app, you'll wait and then you'll get nginx 504:
+If you browse to the app, it does nothing, and then you'll get nginx 504:
 
 * Try disabling `ufw` whether it helps.
   * If yes, try to enable the firewall back `ufw enable` and browse the app again - this usually helps.
