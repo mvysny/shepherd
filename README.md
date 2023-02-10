@@ -243,8 +243,6 @@ Doesn't accept buildargs, but the ENV variables can be defined directly in k8s r
   always be "deployment", "service", "pod", "ingress-global", "ingress-host".
 * To modify mem/cpu resource limits, edit the yaml file Deployment part, the `spec.template.spec.containers[0].resources.limits` part
 
-TODO env variables, database, Vaadin monitoring, persistent storage, ...
-
 To expose a project on additional DNS domain, add:
 
 ```yaml
@@ -252,8 +250,14 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ingress-custom-dns-vaadin3-fake
-  namespace: $NAMESPACE    # use proper namespace!
+  namespace: shepherd-PROJECT_ID    # use the right app namespace! 
+  annotations:
+    cert-manager.io/cluster-issuer: lets-encrypt
 spec:
+  tls:
+    - hosts:
+      - vaadin3.fake
+      secretName: vaadin3-fake-ingress-tls
   rules:
     - host: "vaadin3.fake"
       http:
@@ -264,7 +268,26 @@ spec:
               service:
                 name: service
                 port:
+                  number: 8080
 ```
+
+[Environment variables in Kubernetes](https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/):
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+spec:
+  template:
+    spec:
+      containers:
+        - name: main
+          image: <<IMAGE_AND_HASH>>
+          env:
+          - name: VAADIN_OFFLINE_KEY
+            value: "[contents of offlineKey file here]"
+```
+
+TODO: database, Vaadin monitoring, persistent storage, ...
 
 ## Removing a project
 
