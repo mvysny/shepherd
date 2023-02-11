@@ -92,7 +92,10 @@ $ reboot
 Install microk8s:
 ```bash
 $ snap install microk8s --classic
+$ microk8s disable ha-cluster
 ```
+
+Disabling `ha-cluster` removes support for high availability & cluster but lowers the CPU usage significantly: [#1577](https://github.com/canonical/microk8s/issues/1577)
 
 Setup firewall:
 
@@ -324,6 +327,10 @@ If you browse to the app, it does nothing, and then you'll get nginx 504:
 * Try disabling `ufw` whether it helps.
   * If yes, try to enable the firewall back `ufw enable` and browse the app again - this usually helps.
   * If that doesn't help, try `ufw disable && ufw reset`, then re-add all rules back, then `ufw enable`.
+
+If microk8s uses lots of CPU
+
+* Disable `ha-cluster`: [#1567](https://github.com/canonical/microk8s/issues/1567) but that clears all data: [#1577](https://github.com/canonical/microk8s/issues/1577)
 
 ## Configuration
 
