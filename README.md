@@ -333,6 +333,10 @@ If microk8s uses lots of CPU
 
 * Disable `ha-cluster`: [#1567](https://github.com/canonical/microk8s/issues/1567) but that clears all data: [#1577](https://github.com/canonical/microk8s/issues/1577)
 
+More troubleshooting tips:
+
+* [microk8s & let's encrypt](https://mvysny.github.io/microk8s-lets-encrypt/)
+
 ## Configuration
 
 Configuration: Every project has its k8s resource configuration file in `/etc/shepherd/k8s/`:
