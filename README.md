@@ -92,7 +92,8 @@ $ reboot
 Install microk8s:
 ```bash
 $ snap install microk8s --classic
-$ microk8s disable ha-cluster
+$ microk8s disable ha-cluster --force
+$ microk8s status
 ```
 
 Disabling `ha-cluster` removes support for high availability & cluster but lowers the CPU usage significantly: [#1577](https://github.com/canonical/microk8s/issues/1577)
