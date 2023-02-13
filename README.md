@@ -31,7 +31,7 @@ Generally you place an appropriate `Dockerfile` to the root of your repository. 
 
 ## Installing
 
-Get a VM with 8 GB of RAM and Ubuntu x86-64, the newer Ubuntu the better, preferably 22.04.
+Get a VM with 8-16 GB of RAM and Ubuntu x86-64; use Ubuntu latest LTS.
 ssh into the machine as root & update. Once you're in, we'll install and configure microk8s and jenkins.
 
 First, install a bunch of useful utility stuff, then enter byobu:
@@ -57,7 +57,8 @@ First, install Java since Jenkins depends on it:
 ```bash
 $ apt install openjdk-11-jre
 ```
-Then, [Install Jenkins on Linux](https://www.jenkins.io/doc/book/installing/linux/), the LTS version via apt.
+Then, [Install LTS Jenkins on Linux](https://www.jenkins.io/doc/book/installing/linux/) via apt.
+That way, Jenkins integrates into SystemD and will start automatically when the machine is rebooted.
 
 Check log to see that everything is okay: `journalctl -u jenkins`, `journalctl -u jenkins -f`.
 Now, edit Jenkins config file via `systemctl edit jenkins` and add the following:
