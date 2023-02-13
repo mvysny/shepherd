@@ -331,7 +331,7 @@ If you browse to the app, it does nothing, and then you'll get nginx 504:
 
 If microk8s uses lots of CPU
 
-* Disable `ha-cluster`: [#1567](https://github.com/canonical/microk8s/issues/1567) but that clears all data: [#1577](https://github.com/canonical/microk8s/issues/1577)
+* Disable `ha-cluster`: [#8](https://github.com/mvysny/shepherd/issues/8)
 
 More troubleshooting tips:
 
