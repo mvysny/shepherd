@@ -1,6 +1,16 @@
 #!/bin/bash
 set -e -o pipefail
 
+#
+# Creates a new basic project configuration. Example of use:
+#
+# ./shepherd-new my-pet-project
+#
+# This will create Kubernetes config file and will print further steps to take. After that's done,
+# your app will be running at https://v-herd.eu/my-pet-project and will automatically
+# update as you commit code to git.
+#
+
 K8S=/etc/shepherd/k8s
 PROJECT_ID="$1"
 
@@ -120,3 +130,4 @@ echo "Further steps:"
 echo "1. Create a job in Jenkins. See https://github.com/mvysny/shepherd#adding-a-project for exact steps"
 echo "2. Further modify the $K8S_RESOURCE_FILE as necessary"
 echo "3. Do NOT 'mkctl apply -f $K8S_RESOURCE_FILE' by hand since the IMAGE needs to be filled in. The shepherd-build script will do that."
+echo "4. Once Jenkins runs the job, your app will be running at https://v-herd.eu/$PROJECT_ID"

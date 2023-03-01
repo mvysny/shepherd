@@ -4,7 +4,7 @@ set -e -o pipefail
 PROJECT_ID=$1
 #
 # Builds the project as a docker image and runs it inside Kubernetes. Intended
-# to be called from CI after we have new sources.
+# to be called from CI (Jenkins) after the project's source git repo has been updated.
 #
 # Accepts parameters:
 # - the project id, e.g. vaadin-boot-example-gradle
