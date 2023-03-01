@@ -6,8 +6,6 @@ Built with off-the-shelf tools.
 
 See the [previous Vaadin Shepherd](https://gitlab.vaadin.com/mavi/vaadin-shepherd).
 
-This is mostly a documentation on how to get things running quickly in cloud VM.
-
 # Adding Your Project To Shepherd
 
 Shepherd expects the following from your project:
@@ -25,6 +23,8 @@ See the following projects for examples:
 2. Maven+Embedded Jetty: [vaadin-embedded-jetty-maven](https://github.com/mvysny/vaadin-embedded-jetty-maven)
 
 # Shepherd Internals
+
+This is a documentation on how to get things running quickly in cloud VM.
 
 Shepherd needs/uses the following components:
 
