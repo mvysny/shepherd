@@ -1,8 +1,8 @@
 # Shepherd
 
 Builds given git repos periodically and automatically deploys them to a Kubernetes cluster.
-Serves as a homebrew "replacement" for Heroku, to publish your own stuff.
-Built with off-the-shelf tools.
+Serves as a homebrew "replacement" for Heroku, to publish your own pet projects. 
+Built with off-the-shelf tools: Kubernetes and Jenkins.
 
 See the [previous Vaadin Shepherd](https://gitlab.vaadin.com/mavi/vaadin-shepherd).
 
