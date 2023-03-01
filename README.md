@@ -214,7 +214,11 @@ We already registered the `--default-ssl-certificate=v-herd-eu-welcome-page/v-he
 when we enabled `ingress` above. You can verify that the configuration took effect, by
 taking a look at the ` nginx-ingress-microk8s-controller` DaemonSet in microk8s Dashboard.
 
-## Adding a project
+## Using Shepherd
+
+Documents the most common steps after Shepherd is installed.
+
+### Adding a project
 
 First, decide on the project id, e.g. `vaadin-boot-example-gradle`. The project ID will go into k8s namespace;
 Namespace must be a valid [DNS Name](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-label-names),
@@ -246,7 +250,7 @@ Optionally, add the following env variables to the `shepherd-build`:
 
 Doesn't accept buildargs, but the ENV variables can be defined directly in k8s resource yaml.
 
-### k8s resource file contents tips
+#### k8s resource file contents tips
 
 * Don't forget to use the `shepherd-PROJECT_ID` namespace.
 * Since all projects have their own namespace, the k8s resource names can simply
@@ -299,7 +303,7 @@ spec:
 
 TODO: database, Vaadin monitoring, persistent storage, ...
 
-## Removing a project
+### Removing a project
 
 * Remove CI pipeline by hand
 * run `mkctl delete -f /etc/shepherd/k8s/PROJECT_ID.yaml`
