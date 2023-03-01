@@ -10,6 +10,13 @@ set -e -o pipefail
 # your app will be running at https://v-herd.eu/my-pet-project and will automatically
 # update as you commit code to git.
 #
+# the Project ID must:
+#
+# * contain at most 54 characters
+# * contain only lowercase alphanumeric characters or '-'
+# * start with an alphanumeric character
+# * end with an alphanumeric character
+#
 
 K8S=/etc/shepherd/k8s
 PROJECT_ID="$1"
