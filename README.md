@@ -8,7 +8,25 @@ See the [previous Vaadin Shepherd](https://gitlab.vaadin.com/mavi/vaadin-shepher
 
 This is mostly a documentation on how to get things running quickly in cloud VM.
 
-Uses components:
+# Adding Your Project To Shepherd
+
+Shepherd expects the following from your project:
+
+1. It must have `Dockerfile` at the root of its git repo.
+2. The Docker image can be built via the `docker build --no-cache -t test/xyz:latest .` command
+3. You need to write kubernetes yaml resource config file, which uses the image and defines all
+   resources, services, ingresses etc. You can run the `shepherd-new` script to generate the yaml for you though.
+
+Generally, all you need is to place an appropriate `Dockerfile` to the root of your project's git repository.
+See the following projects for examples:
+
+1. Gradle+Embedded Jetty: [vaadin-embedded-jetty-gradle](https://github.com/mvysny/vaadin-embedded-jetty-gradle), [vaadin14-embedded-jetty-gradle](https://github.com/mvysny/vaadin14-embedded-jetty-gradle),
+   [karibu-helloworld-application](https://github.com/mvysny/karibu-helloworld-application), [beverage-buddy-vok](https://github.com/mvysny/beverage-buddy-vok), [vok-security-demo](https://github.com/mvysny/vok-security-demo)
+2. Maven+Embedded Jetty: [vaadin-embedded-jetty-maven](https://github.com/mvysny/vaadin-embedded-jetty-maven)
+
+# Shepherd Internals
+
+Shepherd needs/uses the following components:
 
 * A VM with Ubuntu
 * microk8s for keeping containers up-and-running, replaces nginx with ingress,
@@ -16,20 +34,7 @@ Uses components:
 * Jenkins pulls git link periodically, then calls `shepherd-build` which builds new docker image, uploads to microk8s registry and restarts pods.
 * no need for CD atm.
 
-Shepherd expects the following from your project:
-
-1. It must have `Dockerfile` at the root of its git repo.
-2. The Docker image can be built via the `docker build --no-cache -t test/xyz:latest .` command
-3. You need to write kubernetes yaml resource config file, which uses the image and defines all
-   resources, services, ingresses etc.
-
-Generally you place an appropriate `Dockerfile` to the root of your repository. See the following projects for an example:
-
-1. Gradle+Embedded Jetty: [vaadin-embedded-jetty-gradle](https://github.com/mvysny/vaadin-embedded-jetty-gradle), [vaadin14-embedded-jetty-gradle](https://github.com/mvysny/vaadin14-embedded-jetty-gradle),
-   [karibu-helloworld-application](https://github.com/mvysny/karibu-helloworld-application), [beverage-buddy-vok](https://github.com/mvysny/beverage-buddy-vok), [vok-security-demo](https://github.com/mvysny/vok-security-demo)
-2. Maven+Embedded Jetty: [vaadin-embedded-jetty-maven](https://github.com/mvysny/vaadin-embedded-jetty-maven)
-
-## Installing
+## Installing Shepherd
 
 Get a VM with 8-16 GB of RAM and Ubuntu x86-64; use Ubuntu latest LTS.
 ssh into the machine as root & update. Once you're in, we'll install and configure microk8s and jenkins.
