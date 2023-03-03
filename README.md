@@ -247,7 +247,7 @@ The `shepherd-build` builder will copy the resource yaml, modify image hash, the
 Optionally, add the following env variables to the `shepherd-build`:
 
 * `BUILD_MEMORY`: (optional) how much memory the build image will get. Defaults to `1024m`, but for Gradle use `1500m`
-* `BUILD_ARGS`: (optional) for example `--build-arg offlinekey="[offline key]"`. Then,
+* `BUILD_ARGS`: (optional) for example add `export BUILD_ARGS='--build-arg offlinekey=foo'` to Jenkins.
   Then, add the following to your `Dockerfile`: `ARG offlinekey`; `ENV VAADIN_OFFLINE_KEY=$offlinekey` to pass in
   the Vaadin offline key to perform the production build with.
 
