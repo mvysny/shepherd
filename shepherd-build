@@ -37,9 +37,11 @@ BUILD_MEMORY="${BUILD_MEMORY:-1024m}"
 IMAGE="localhost:32000/shepherd/${PROJECT_ID}"
 
 # 1. build new docker image.
-# optionally, add build args via   --build-arg offlinekey=foo. Then,
-# add the following to your `Dockerfile`: `ARG offlinekey`; `ENV VAADIN_OFFLINE_KEY=$offlinekey`
-# Even simpler: simply add env variables to k8s resource config file.
+# optionally, add build args via
+#
+# export BUILD_ARGS='--build-arg offlinekey="foo"'
+#
+# Then, add the following to your `Dockerfile`: `ARG offlinekey`; `ENV VAADIN_OFFLINE_KEY=$offlinekey`
 # Uses 2 CPUs per build to speed things up.
 echo "Building image $IMAGE"
 docker build --no-cache -t "$IMAGE:latest" -m "$BUILD_MEMORY" --cpu-period 100000 --cpu-quota 200000 .
