@@ -239,7 +239,9 @@ Now, create the Jenkins job:
 * Discard old builds, Max # of builds to keep=3
 * Poll SCM with schedule `H/5 * * * *`
 * Build Environment: Add timestamps to the Console Output
+* Terminate a build if it's stuck; after 15 minutes. No timeout actions needed -> defaults to 'abort'
 * Execute shell: `export BUILD_MEMORY=1500m && /opt/shepherd/shepherd-build vaadin-boot-example-gradle`
+* Post-build: send e-mail
 * Save, Build Now
 
 The `shepherd-build` builder will copy the resource yaml, modify image hash, then `mkctl apply -f`.
