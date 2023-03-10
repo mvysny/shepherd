@@ -214,6 +214,24 @@ We already registered the `--default-ssl-certificate=v-herd-eu-welcome-page/v-he
 when we enabled `ingress` above. You can verify that the configuration took effect, by
 taking a look at the ` nginx-ingress-microk8s-controller` DaemonSet in microk8s Dashboard.
 
+### After Installation
+
+If unchecked, docker build images will consume all disk space. Add the following cron daily job to purge the images:
+
+```bash
+$ vim /etc/cron.daily/docker-prune
+```
+
+```bash
+#!/bin/bash
+set -e -o pipefail
+docker system prune -f
+```
+
+```bash
+$ chmod a+x /etc/cron.daily/docker-prune
+```
+
 ## Using Shepherd
 
 Documents the most common steps after Shepherd is installed.
@@ -233,7 +251,7 @@ Now call `shepherd-new vaadin-boot-example-gradle 256Mi` to create the project's
 resource config file yaml (named `/etc/shepherd/k8s/PROJECT_ID.yaml`).
 See chapter below on tips on k8s yaml contents, for mem/cpu, env variables, database, Vaadin monitoring, persistent storage, ...
 
-Now, create the Jenkins job:
+Now, create a Jenkins job:
 
 * New Item, "vaadin-boot-example-gradle", Freestyle project, OK.
 * Discard old builds, Max # of builds to keep=3
