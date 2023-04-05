@@ -11,9 +11,9 @@ See the [previous Vaadin Shepherd](https://gitlab.vaadin.com/mavi/vaadin-shepher
 Shepherd expects the following from your project:
 
 1. It must have `Dockerfile` at the root of its git repo.
-2. The Docker image can be built via the `docker build --no-cache -t test/xyz:latest .` command
-3. You need to write kubernetes yaml resource config file, which uses the image and defines all
-   resources, services, ingresses etc. You can run the `shepherd-new` script to generate the yaml for you though.
+2. The Docker image can be built via the `docker build --no-cache -t test/xyz:latest .` command;
+   The image can be run via `docker run --rm -ti -p8080:8080 test/xyz` command.
+3. You can now register the project to Shepherd. Continue to the "Adding a project" chapter.
 
 Generally, all you need is to place an appropriate `Dockerfile` to the root of your project's git repository.
 See the following projects for examples:
