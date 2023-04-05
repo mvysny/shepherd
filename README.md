@@ -24,6 +24,7 @@ See the following projects for examples:
    [beverage-buddy-vok](https://github.com/mvysny/beverage-buddy-vok),
    [vok-security-demo](https://github.com/mvysny/vok-security-demo)
 2. Maven+Embedded Jetty: [vaadin-boot-example-maven](https://github.com/mvysny/vaadin-boot-example-maven)
+3. Maven+Spring Boot: [Liukuri](https://github.com/vesanieminen/ElectricityCostDashboard)
 
 # Shepherd Internals
 
