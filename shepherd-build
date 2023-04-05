@@ -49,20 +49,7 @@ docker build --no-cache -t "$IMAGE:latest" -m "$BUILD_MEMORY" --cpu-period 10000
 echo "Pushing image $IMAGE to k8s local repository"
 docker push "$IMAGE:latest"
 
-
-# 2. Obtain the hash of new image
-IMAGE_AND_HASH=`docker inspect --format='{{index .RepoDigests 0}}' "$IMAGE:latest"`
-# this will produce something like:
-#   localhost:32000/test/vaadin-boot-example-gradle@sha256:62d6de89ced35ed07571fb9190227b08a7a10c80c97eccfa69b1aa5829f44b9a
-echo "Newest image and hash: $IMAGE_AND_HASH"
-
-# 3. generate new k8s resource config and apply.
-cat "/etc/shepherd/k8s/${PROJECT_ID}.yaml" | sed "s#<<IMAGE_AND_HASH>>#$IMAGE_AND_HASH#" >"/tmp/${PROJECT_ID}.yaml"
-
-echo "Applying new k8s resource config file"
-microk8s kubectl apply -f "/tmp/${PROJECT_ID}.yaml"
-
-# 4. delete the local docker image. The image is obsolete now since Kubernetes will use the one
-# that has been uploaded to its registry.
-echo "Deleting local docker image $IMAGE"
-docker image rm "$IMAGE"
+# 2. Apply Kubernetes yaml config file of this project.
+SCRIPT=$(readlink -f "$0")
+SCRIPTPATH=$(dirname "$SCRIPT")
+$SCRIPTPATH/shepherd-apply $PROJECT_ID

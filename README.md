@@ -328,6 +328,12 @@ spec:
 
 TODO: database, Vaadin monitoring, persistent storage, ...
 
+#### Manual changes to the project kubernetes yaml config file
+
+The app Kubernetes config yaml file is located at `/etc/shepherd/k8s/PROJECT_ID.yaml`.
+You can freely edit the file but the changes will be applied automatically only after the app is
+built in Jenkins. To apply the changes faster, run the `./shepherd-apply PROJECT_ID` script manually from bash.
+
 ### Removing a project
 
 * Remove CI pipeline by hand
