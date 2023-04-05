@@ -24,13 +24,14 @@ if [[ -z "${PROJECT_ID}" ]]; then
   exit 1
 fi
 
+K8S_RESOURCE_CONFIG_FILE="/etc/shepherd/k8s/${PROJECT_ID}.yaml"
+
 if [[ ! -f "$K8S_RESOURCE_CONFIG_FILE" ]]; then
   echo "$K8S_RESOURCE_CONFIG_FILE does not exist"
   exit 1
 fi
 
 IMAGE="localhost:32000/shepherd/${PROJECT_ID}"
-K8S_RESOURCE_CONFIG_FILE="/etc/shepherd/k8s/${PROJECT_ID}.yaml"
 
 # 1. Obtain the hash of new image
 IMAGE_AND_HASH=`docker inspect --format='{{index .RepoDigests 0}}' "$IMAGE:latest"`
