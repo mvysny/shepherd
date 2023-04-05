@@ -18,9 +18,12 @@ Shepherd expects the following from your project:
 Generally, all you need is to place an appropriate `Dockerfile` to the root of your project's git repository.
 See the following projects for examples:
 
-1. Gradle+Embedded Jetty: [vaadin-embedded-jetty-gradle](https://github.com/mvysny/vaadin-embedded-jetty-gradle), [vaadin14-embedded-jetty-gradle](https://github.com/mvysny/vaadin14-embedded-jetty-gradle),
-   [karibu-helloworld-application](https://github.com/mvysny/karibu-helloworld-application), [beverage-buddy-vok](https://github.com/mvysny/beverage-buddy-vok), [vok-security-demo](https://github.com/mvysny/vok-security-demo)
-2. Maven+Embedded Jetty: [vaadin-embedded-jetty-maven](https://github.com/mvysny/vaadin-embedded-jetty-maven)
+1. Gradle+Embedded Jetty: [vaadin-boot-example-gradle](https://github.com/mvysny/vaadin-boot-example-gradle),
+   [vaadin14-boot-example-gradle](https://github.com/mvysny/vaadin14-boot-example-gradle),
+   [karibu-helloworld-application](https://github.com/mvysny/karibu-helloworld-application),
+   [beverage-buddy-vok](https://github.com/mvysny/beverage-buddy-vok),
+   [vok-security-demo](https://github.com/mvysny/vok-security-demo)
+2. Maven+Embedded Jetty: [vaadin-boot-example-maven](https://github.com/mvysny/vaadin-boot-example-maven)
 
 # Shepherd Internals
 
