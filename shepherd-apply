@@ -10,7 +10,7 @@ IMAGE_AND_HASH="$2"
 #
 # Accepts parameters:
 # - the project id, e.g. vaadin-boot-example-gradle
-# - image and hash of the latest image pushed in kubernetes docker registry, e.g. localhost:32000/test/vaadin-boot-example-gradle@sha256:62d6de89ced35ed07571fb9190227b08a7a10c80c97eccfa69b1aa5829f44b9a
+# - image_and_hash of the latest image pushed in kubernetes docker registry, e.g. localhost:32000/test/vaadin-boot-example-gradle@sha256:62d6de89ced35ed07571fb9190227b08a7a10c80c97eccfa69b1aa5829f44b9a
 #
 # Expects:
 # - a k8s resource config file yaml named /etc/shepherd/k8s/vaadin-boot-example-gradle.yaml
@@ -18,6 +18,9 @@ IMAGE_AND_HASH="$2"
 # The k8s resource config file should:
 # - be namespaced to shepherd-$PROJECT_ID
 # - include all definitions for pod, service and ingress
+#
+# You can get the image_and_hash from the last Jenkins build for that project -
+# it's logged to the stdout by the `shepherd-build` script.
 
 help() {
   echo
