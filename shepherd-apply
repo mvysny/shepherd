@@ -1,7 +1,8 @@
 #!/bin/bash
 set -e -o pipefail
 
-PROJECT_ID=$1
+PROJECT_ID="$1"
+IMAGE_AND_HASH="$2"
 #
 # Applies new Kubernetes configuration for given project. Called from `shepherd-build` script
 # after a new image has been built. Run this script if you make any changes to the project Kubernetes
@@ -9,6 +10,7 @@ PROJECT_ID=$1
 #
 # Accepts parameters:
 # - the project id, e.g. vaadin-boot-example-gradle
+# - image and hash of the latest image pushed in kubernetes docker registry, e.g. localhost:32000/test/vaadin-boot-example-gradle@sha256:62d6de89ced35ed07571fb9190227b08a7a10c80c97eccfa69b1aa5829f44b9a
 #
 # Expects:
 # - a k8s resource config file yaml named /etc/shepherd/k8s/vaadin-boot-example-gradle.yaml
@@ -17,11 +19,20 @@ PROJECT_ID=$1
 # - be namespaced to shepherd-$PROJECT_ID
 # - include all definitions for pod, service and ingress
 
+help() {
+  echo
+  echo "Use: $0 project_id image_and_hash"
+  exit 1
+}
+
 if [[ -z "${PROJECT_ID}" ]]; then
   echo "project_id missing; should be e.g. vaadin-boot-example-gradle"
-  echo
-  echo "Use: $0 project_id"
-  exit 1
+  help
+fi
+
+if [[ -z "${IMAGE_AND_HASH}" ]]; then
+  echo "image_and_hash missing; should be e.g. localhost:32000/test/vaadin-boot-example-gradle@sha256:62d6de89ced35ed07571fb9190227b08a7a10c80c97eccfa69b1aa5829f44b9a"
+  help
 fi
 
 K8S_RESOURCE_CONFIG_FILE="/etc/shepherd/k8s/${PROJECT_ID}.yaml"
@@ -31,21 +42,8 @@ if [[ ! -f "$K8S_RESOURCE_CONFIG_FILE" ]]; then
   exit 1
 fi
 
-IMAGE="localhost:32000/shepherd/${PROJECT_ID}"
-
-# 1. Obtain the hash of new image
-IMAGE_AND_HASH=`docker inspect --format='{{index .RepoDigests 0}}' "$IMAGE:latest"`
-# this will produce something like:
-#   localhost:32000/test/vaadin-boot-example-gradle@sha256:62d6de89ced35ed07571fb9190227b08a7a10c80c97eccfa69b1aa5829f44b9a
-echo "Newest image and hash: $IMAGE_AND_HASH"
-
-# 2. generate new k8s resource config and apply.
+# generate new k8s resource config and apply.
 cat "$K8S_RESOURCE_CONFIG_FILE" | sed "s#<<IMAGE_AND_HASH>>#$IMAGE_AND_HASH#" >"/tmp/${PROJECT_ID}.yaml"
 
 echo "Applying new k8s resource config file"
 microk8s kubectl apply -f "/tmp/${PROJECT_ID}.yaml"
-
-# 3. delete the local docker image. The image is obsolete now since Kubernetes will use the one
-# that has been uploaded to its registry.
-echo "Deleting local docker image $IMAGE"
-docker image rm "$IMAGE"
