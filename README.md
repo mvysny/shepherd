@@ -18,13 +18,40 @@ Shepherd expects the following from your project:
 Generally, all you need is to place an appropriate `Dockerfile` to the root of your project's git repository.
 See the following projects for examples:
 
-1. Gradle+Embedded Jetty: [vaadin-boot-example-gradle](https://github.com/mvysny/vaadin-boot-example-gradle),
+1. Gradle+Embedded Jetty packaged as zip: [vaadin-boot-example-gradle](https://github.com/mvysny/vaadin-boot-example-gradle),
    [vaadin14-boot-example-gradle](https://github.com/mvysny/vaadin14-boot-example-gradle),
    [karibu-helloworld-application](https://github.com/mvysny/karibu-helloworld-application),
    [beverage-buddy-vok](https://github.com/mvysny/beverage-buddy-vok),
    [vok-security-demo](https://github.com/mvysny/vok-security-demo)
-2. Maven+Embedded Jetty: [vaadin-boot-example-maven](https://github.com/mvysny/vaadin-boot-example-maven)
-3. Maven+Spring Boot: [Liukuri](https://github.com/vesanieminen/ElectricityCostDashboard)
+2. Maven+Embedded Jetty packaged as zip: [vaadin-boot-example-maven](https://github.com/mvysny/vaadin-boot-example-maven)
+3. Maven+Spring Boot packaged as executable jar: [Liukuri](https://github.com/vesanieminen/ElectricityCostDashboard)
+
+For Maven+war project, please use the following `Dockerfile`:
+
+```dockerfile
+# 1. Build the image with: docker build --no-cache -t test/xyz:latest .
+# 2. Run the image with: docker run --rm -ti -p8080:8080 test/xyz
+
+# The "Build" stage. Copies the entire project into the container, into the /app/ folder, and builds it.
+FROM maven:3.9.1-eclipse-temurin-17 AS BUILD
+COPY . /app/
+WORKDIR /app/
+RUN mvn -C clean test package -Pproduction
+# At this point, we have the app WAR file in
+# at /app/target/*.war
+RUN mv /app/target/*.war /app/target/ROOT.war
+
+# The "Run" stage. Start with a clean image, and copy over just the app itself, omitting gradle, npm and any intermediate build files.
+FROM tomcat:10-jre17
+COPY --from=BUILD /app/target/ROOT.war /usr/local/tomcat/webapps/
+EXPOSE 8080
+```
+
+If your app fails to start, you can get the container logs by running:
+```bash
+$ docker exec -ti CONTAINER_ID /bin/bash
+$ cat /usr/local/tomcat/logs/localhost.*
+```
 
 # Shepherd Internals
 
