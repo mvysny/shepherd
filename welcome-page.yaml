@@ -3,6 +3,15 @@ kind: Namespace
 metadata:
   name: v-herd-eu-welcome-page
 ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: static-site-pvc
+  namespace: v-herd-eu-welcome-page
+spec:
+  accessModes: [ReadWriteOnce]
+  resources: { requests: { storage: 1Mi } }
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -17,6 +26,10 @@ spec:
       labels:
         app: pod
     spec:
+      volumes:
+        - name: static-site-vol
+          persistentVolumeClaim:
+            claimName: static-site-pvc
       containers:
         - name: nginx
           image: nginx:1.14.2
@@ -29,6 +42,9 @@ spec:
             limits:
               memory: "64Mi"
               cpu: "500m"
+          volumeMounts:
+            - name: static-site-vol
+              mountPath: /usr/share/nginx/html
 ---
 apiVersion: v1
 kind: Service

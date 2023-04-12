@@ -245,6 +245,11 @@ We already registered the `--default-ssl-certificate=v-herd-eu-welcome-page/v-he
 when we enabled `ingress` above. You can verify that the configuration took effect, by
 taking a look at the ` nginx-ingress-microk8s-controller` DaemonSet in microk8s Dashboard.
 
+To configure the welcome page shown when browsing to `https://v-herd.eu`, go to the `v-herd-eu-welcome-page/static-site-vol` volume
+folder. The folder should be at `/var/snap/microk8s/common/default-storage/v-herd-eu-welcome-page-static-site-pvc-*`,
+see the [microk8s storage docs](https://microk8s.io/docs/addon-hostpath-storage) for details.
+Example of the `index.html` can be found at [#12](https://github.com/mvysny/shepherd/issues/12).
+
 ### After Installation
 
 If unchecked, docker build images will consume all disk space. Add the following cron daily job to purge the images:
