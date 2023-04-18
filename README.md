@@ -24,7 +24,8 @@ See the following projects for examples:
    [beverage-buddy-vok](https://github.com/mvysny/beverage-buddy-vok),
    [vok-security-demo](https://github.com/mvysny/vok-security-demo)
 2. Maven+Embedded Jetty packaged as zip: [vaadin-boot-example-maven](https://github.com/mvysny/vaadin-boot-example-maven)
-3. Maven+Spring Boot packaged as executable jar: [Liukuri](https://github.com/vesanieminen/ElectricityCostDashboard)
+3. Maven+Spring Boot packaged as executable jar: [Liukuri](https://github.com/vesanieminen/ElectricityCostDashboard),
+   [my-hilla-app](https://github.com/mvysny/my-hilla-app).
 
 For Maven+war project, please use the following `Dockerfile`:
 
