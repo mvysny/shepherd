@@ -25,6 +25,10 @@ if [[ -z "${PROJECT_ID}" ]]; then
   echo "Use: $0 project_id"
   exit 1
 fi
+if ! [[ $PROJECT_ID =~ ^[a-z][a-z0-9\-]{0,52}[a-z]$ ]]; then
+  echo "$PROJECT_ID is not a valid project ID"
+  exit 1
+fi
 
 K8S_RESOURCE_CONFIG_FILE="/etc/shepherd/k8s/${PROJECT_ID}.yaml"
 

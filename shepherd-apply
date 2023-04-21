@@ -32,6 +32,10 @@ if [[ -z "${PROJECT_ID}" ]]; then
   echo "project_id missing; should be e.g. vaadin-boot-example-gradle"
   help
 fi
+if ! [[ $PROJECT_ID =~ ^[a-z][a-z0-9\-]{0,52}[a-z]$ ]]; then
+  echo "$PROJECT_ID is not a valid project ID"
+  exit 1
+fi
 
 if [[ -z "${IMAGE_AND_HASH}" ]]; then
   echo "image_and_hash missing; should be e.g. localhost:32000/test/vaadin-boot-example-gradle@sha256:62d6de89ced35ed07571fb9190227b08a7a10c80c97eccfa69b1aa5829f44b9a"
