@@ -359,7 +359,78 @@ spec:
             value: "[contents of offlineKey file here]"
 ```
 
-TODO: database, Vaadin monitoring, persistent storage, ...
+##### Adding persistent PostgreSQL database
+
+Please read the [Vaadin app with persistent PostgreSQL in Kubernetes](https://mvysny.github.io/kubernetes-vaadin-app-postgresql/)
+for information on this setup. In short, add the following yaml to the app's kubernetes config yaml file:
+
+```yaml
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+  namespace: shepherd-TODO
+spec:
+  accessModes: [ReadWriteOnce]
+  resources: { requests: { storage: 512Mi } }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgresql-deployment
+  namespace: shepherd-TODO
+spec:
+  selector:
+    matchLabels:
+      app: postgres-pod
+  template:
+    metadata:
+      labels:
+        app: postgres-pod
+    spec:
+      volumes:
+        - name: postgres-vol
+          persistentVolumeClaim:
+            claimName: postgres-pvc
+      containers:
+        - name: postgresql
+          image: postgres:15.2
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_PASSWORD
+              value: mysecretpassword
+          resources:
+            requests:
+              memory: "2Mi"
+              cpu: 0
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          volumeMounts:
+            - name: postgres-vol
+              mountPath: /var/lib/postgresql/data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres  # this will also be the DNS name of the VM running this service.
+  namespace: shepherd-TODO
+spec:
+  selector:
+    app: postgres-pod
+  ports:
+    - port: 5432
+```
+
+1. Don't forget to change the `shepherd-TODO` namespace to the appropriate namespace of your app.
+2. Configure your app to connect to the `jdbc:postgresql://postgres:5432/postgres` URL, with the `postgres` username and
+   `mysecretpassword` password.
+
+##### More tips
+
+TODO: Vaadin monitoring, ...
 
 #### Manual changes to the project kubernetes yaml config file
 
