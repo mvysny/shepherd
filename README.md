@@ -329,6 +329,9 @@ Optionally, add the following env variables to the `shepherd-build`:
   Then, add the following to your `Dockerfile`: `ARG offlinekey`; `ENV VAADIN_OFFLINE_KEY=$offlinekey` to pass in
   the Vaadin offline key to perform the production build with.
 
+> Important: Make sure to use the "Server license key" and NOT the "Offline development license key":
+> The offline dev key depends on the machine ID which may change easily when building in Docker.
+
 #### k8s resource file contents tips
 
 * Don't forget to use the `shepherd-PROJECT_ID` namespace.
