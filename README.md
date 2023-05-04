@@ -13,7 +13,7 @@ Shepherd expects the following from your project:
 1. It must have `Dockerfile` at the root of its git repo.
 2. The Docker image can be built via the `docker build --no-cache -t test/xyz:latest .` command;
    The image can be run via `docker run --rm -ti -p8080:8080 test/xyz` command.
-3. You can now register the project to Shepherd. Continue to the "Adding a project" chapter.
+3. You can now register the project to Shepherd. **Continue to the "Adding a project" chapter** below.
 
 Generally, all you need is to place an appropriate `Dockerfile` to the root of your project's git repository.
 See the following projects for examples:
@@ -26,6 +26,8 @@ See the following projects for examples:
 2. Maven+Embedded Jetty packaged as zip: [vaadin-boot-example-maven](https://github.com/mvysny/vaadin-boot-example-maven)
 3. Maven+Spring Boot packaged as executable jar: [Liukuri](https://github.com/vesanieminen/ElectricityCostDashboard),
    [my-hilla-app](https://github.com/mvysny/my-hilla-app).
+
+## Maven+WAR
 
 For Maven+war project, please use the following `Dockerfile`:
 
@@ -53,6 +55,25 @@ If your app fails to start, you can get the container logs by running:
 $ docker exec -ti CONTAINER_ID /bin/bash
 $ cat /usr/local/tomcat/logs/localhost.*
 ```
+
+## Vaadin Addons
+
+Vaadin addons are set up in a bit of an anti-pattern way:
+
+* They package as jar, with the addon code only;
+* The routes are packaged in the `src/test/` folder;
+* They run via `mvn jetty:run`
+
+The downside is that there's no support for production, and running via `mvn jetty:run`
+requires Maven+Maven Repo+node_modules to be packaged in the docker image, increasing its size.
+
+The solution is to:
+
+* Replace Jetty with [Vaadin Boot](https://github.com/mvysny/vaadin-boot), adding Vaadin Boot as a test-scope dependency
+* Creating a `Main.java` in `src/test/java/` which runs the app in Vaadin Boot.
+* Creating Dockerfile which is able to build and run such app.
+
+See [#16](https://github.com/mvysny/shepherd/issues/16) for more details; example project can be found at [parttio/breeze-theme](https://github.com/parttio/breeze-theme).
 
 # Shepherd Internals
 
@@ -481,6 +502,13 @@ If microk8s uses lots of CPU
 More troubleshooting tips:
 
 * [microk8s & let's encrypt](https://mvysny.github.io/microk8s-lets-encrypt/)
+
+## When Build Fails
+
+* If you'll get a `java.text.ParseException: Invalid JWT serialization: Missing dot delimiter(s)`: the `VAADIN_OFFLINE_KEY` env variable may be
+  empty. Make sure that you have `ARG offlinekey` in your `Dockerfile` and that you're passing the contents of the key correctly to `shepherd-build`
+  using `BUILD_ARGS` as described above.
+* `Unexpected exit value: 137` means that the build needs more memory. Increase the value of the `BUILD_MEMORY` env variable passed to `shepherd-build`.
 
 ## Configuration
 
