@@ -75,6 +75,8 @@ The solution is to:
 
 See [#16](https://github.com/mvysny/shepherd/issues/16) for more details; example project can be found at [parttio/breeze-theme](https://github.com/parttio/breeze-theme).
 
+For addons that run via test-scoped Spring Boot, see the `Dockerfile` of the [parttio/parity-theme](https://github.com/parttio/parity-theme) example project.
+
 # Shepherd Internals
 
 This is a documentation on how to get things running quickly in cloud VM.
