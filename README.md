@@ -484,6 +484,21 @@ Browse:
 * Jenkins: [localhost:8080](http://localhost:8080)
 * Microk8s: [localhost:10443](http://localhost:10443)
 
+## Shepherd API
+
+Work in progress - will add more.
+
+To list all projects, simply list the contents of the `/etc/shepherd/k8s/` folder. There will
+be a bunch of yaml files corresponding to individual projects. The yaml naming is `PROJECT_ID.yaml`, so
+you can obtain the project ID from the yaml file name.
+
+In other words:
+
+* A project with ID `foo` will have a file named `/etc/shepherd/k8s/foo.yaml`
+* It will be exposed at `https://v-herd.eu/foo`
+* TODO How to obtain run logs from all services from Kubernetes
+* TODO how to obtain build logs from Jenkins
+
 # Misc
 
 ## Troubleshooting
