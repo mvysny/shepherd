@@ -330,6 +330,7 @@ Optionally, add the following env variables to the `shepherd-build`:
 * `BUILD_ARGS`: (optional) for example add `export BUILD_ARGS='--build-arg offlinekey=foo'` to Jenkins.
   Then, add the following to your `Dockerfile`: `ARG offlinekey`; `ENV VAADIN_OFFLINE_KEY=$offlinekey` to pass in
   the Vaadin offline key to perform the production build with.
+* `DOCKERFILE`: (optional) alternative name of the Dockerfile file
 
 > Important: Make sure to use the "Server license key" and NOT the "Offline development license key":
 > The offline dev key depends on the machine ID which may change easily when building in Docker.

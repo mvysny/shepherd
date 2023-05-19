@@ -11,6 +11,8 @@ PROJECT_ID="$1"
 #
 # Accepts the following env variables:
 # - BUILD_MEMORY: (optional) how much memory the build image will get. Defaults to 1024m
+# - BUILD_ARGS: (optional) for example add `export BUILD_ARGS='--build-arg offlinekey="foo"'
+# - DOCKERFILE: (optional) alternative name of the Dockerfile file
 #
 # Expects:
 # - a k8s resource config file yaml named /etc/shepherd/k8s/vaadin-boot-example-gradle.yaml
@@ -46,6 +48,7 @@ fi
 
 BUILD_MEMORY="${BUILD_MEMORY:-1024m}"
 IMAGE="localhost:32000/shepherd/${PROJECT_ID}"
+DOCKERFILE="${DOCKERFILE:-Dockerfile}"
 
 # 1. build new docker image.
 # optionally, add build args via
@@ -55,7 +58,7 @@ IMAGE="localhost:32000/shepherd/${PROJECT_ID}"
 # Then, add the following to your `Dockerfile`: `ARG offlinekey`; `ENV VAADIN_OFFLINE_KEY=$offlinekey`
 # Uses 2 CPUs per build to speed things up.
 echo "Building image $IMAGE"
-docker build --no-cache -t "$IMAGE:latest" -m "$BUILD_MEMORY" --cpu-period 100000 --cpu-quota 200000 $BUILD_ARGS .
+docker build -f "$DOCKERFILE" --no-cache -t "$IMAGE:latest" -m "$BUILD_MEMORY" --cpu-period 100000 --cpu-quota 200000 $BUILD_ARGS .
 # push it to k8s local repository
 echo "Pushing image $IMAGE to k8s local repository"
 docker push "$IMAGE:latest"
