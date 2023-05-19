@@ -30,7 +30,7 @@ if [[ -z "$PROJECT_ID" ]]; then
         exit 1
 fi
 
-if ! [[ $PROJECT_ID =~ ^[a-z][a-z0-9\-]{0,52}[a-z]$ ]]; then
+if ! [[ $PROJECT_ID =~ ^[a-z0-9][a-z0-9\-]{0,52}[a-z0-9]$ ]]; then
   echo "$PROJECT_ID is not a valid project ID"
   exit 1
 fi
