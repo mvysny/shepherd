@@ -455,6 +455,18 @@ spec:
 2. Configure your app to connect to the `jdbc:postgresql://postgres:5432/postgres` URL, with the `postgres` username and
    `mysecretpassword` password.
 
+##### Spring Security
+
+Spring Security introduces a servlet filter which uses HTTP 302 to redirect the user to the login page.
+Unfortunately that redirect rule is not rewritten by ingress by default, causing the app
+to redirect to `https://v-herd.eu/login` instead to `https://v-herd.eu/yourapp/login`. The fix is easy, just
+add the following rewrite rules to the Ingress `metadata/annotations/` list of the yaml config file:
+
+* `nginx.ingress.kubernetes.io/proxy-redirect-from`: `https://v-herd.eu/`
+* `nginx.ingress.kubernetes.io/proxy-redirect-to`: `https://v-herd.eu\$1`
+
+See [#18](https://github.com/mvysny/shepherd/issues/18) for more details.
+
 ##### More tips
 
 TODO: Vaadin monitoring, ...
