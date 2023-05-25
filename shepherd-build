@@ -11,6 +11,7 @@ PROJECT_ID="$1"
 #
 # Accepts the following env variables:
 # - BUILD_MEMORY: (optional) how much memory the build image will get. Defaults to 1024m
+# - CPU_QUOTA: (optional) CPU quota for the build, defaults to 200000 for 2 CPU cores.
 # - BUILD_ARGS: (optional) for example add `export BUILD_ARGS='--build-arg offlinekey="foo"'
 # - DOCKERFILE: (optional) alternative name of the Dockerfile file
 #
@@ -47,6 +48,7 @@ if [[ ! -f "$K8S_RESOURCE_CONFIG_FILE" ]]; then
 fi
 
 BUILD_MEMORY="${BUILD_MEMORY:-1024m}"
+CPU_QUOTA="${CPU_QUOTA:-1024m}"
 IMAGE="localhost:32000/shepherd/${PROJECT_ID}"
 DOCKERFILE="${DOCKERFILE:-Dockerfile}"
 
@@ -58,7 +60,7 @@ DOCKERFILE="${DOCKERFILE:-Dockerfile}"
 # Then, add the following to your `Dockerfile`: `ARG offlinekey`; `ENV VAADIN_OFFLINE_KEY=$offlinekey`
 # Uses 2 CPUs per build to speed things up.
 echo "Building image $IMAGE"
-docker build -f "$DOCKERFILE" --no-cache -t "$IMAGE:latest" -m "$BUILD_MEMORY" --cpu-period 100000 --cpu-quota 200000 $BUILD_ARGS .
+docker build -f "$DOCKERFILE" --no-cache -t "$IMAGE:latest" -m "$BUILD_MEMORY" --cpu-period 100000 --cpu-quota "$CPU_QUOTA" $BUILD_ARGS .
 # push it to k8s local repository
 echo "Pushing image $IMAGE to k8s local repository"
 docker push "$IMAGE:latest"
