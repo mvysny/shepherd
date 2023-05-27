@@ -8,6 +8,11 @@ See the [previous Vaadin Shepherd](https://gitlab.vaadin.com/mavi/vaadin-shepher
 
 # Adding Your Project To Shepherd
 
+> Tip: The [shepherd-cli](https://github.com/mvysny/shepherd-java-client) is a far easier way
+> to add your projects. This way also works, but is more low-level, requires you to write kubernetes yaml config files
+> and fiddle with Jenkins, and is more error-prone. shepherd-cli calls this project
+> anyway, but its project config file is far simpler.
+
 Shepherd expects the following from your project:
 
 1. It must have `Dockerfile` at the root of its git repo.
