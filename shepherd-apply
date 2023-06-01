@@ -61,3 +61,8 @@ cat "$K8S_RESOURCE_CONFIG_FILE" | sed "s#<<IMAGE_AND_HASH>>#$IMAGE_AND_HASH#" >"
 
 echo "Applying new k8s resource config file"
 microk8s kubectl apply -f "/tmp/${PROJECT_ID}.yaml"
+
+# Delete the file afterwards: this script can be run both by Jenkins and by root user (via shepherd-cli);
+# Creating this file by root user would pretty much cause all follow-up Jenkins builds to fail.
+# Also, we can keep this file as a marker that a shepherd-apply is ongoing; it could even serve as an exclusive lock in the future.
+rm "/tmp/${PROJECT_ID}.yaml"
