@@ -541,6 +541,13 @@ More troubleshooting tips:
 
 * [microk8s & let's encrypt](https://mvysny.github.io/microk8s-lets-encrypt/)
 
+If you get `No ED25519 host key is known for xyz.com and you have requested strict checking.` in Jenkins:
+
+* Obtain the ED25519 host key. You can use the `ssh-keygen -l -F xyz.com` command if the host key is already on your dev machine.
+* ssh to `v-herd.eu`, then run `sudo su jenkins`, then `ssh xyz.com`. ssh will print the key fingerprint; if it matches, press y.
+  The ssh command may fail, but the key is now stored in `/var/lib/jenkins/.ssh/known_hosts`.
+* Re-run Jenkins job.
+
 ## When Build Fails
 
 * If you'll get a `java.text.ParseException: Invalid JWT serialization: Missing dot delimiter(s)`: the `VAADIN_OFFLINE_KEY` env variable may be
