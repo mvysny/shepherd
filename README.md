@@ -297,6 +297,40 @@ docker system prune -f
 $ chmod a+x /etc/cron.daily/docker-prune
 ```
 
+#### Exposing Jenkins via https
+
+First, change Jenkins password to something more powerful. Then,
+set this password in `/etc/shepherd/java/config.json` so that shepherd-cli
+can still manage the setup. Then reconfigure jenkins context root to `/jenkins`
+as described at [Jenkins behind reverse proxy](https://mvysny.github.io/jenkins-behind-reverse-proxy/).
+
+We'll setup nginx to unwrap https and redirect traffic to Jenkins. First,
+install nginx via `sudo apt install nginx-full`. Then, setup certificate retrieval
+as described at [Let's Encrypt+Microk8s+nginx](https://mvysny.github.io/microk8s-lets-encrypt/),
+chapter "nginx".
+
+Edit `/etc/nginx/sites-available/default` and make it look like this:
+```
+server {
+    listen 8443 ssl default_server;
+    listen [::]:8443 ssl default_server;
+    ssl_certificate /etc/nginx/secret/tls.crt;
+    ssl_certificate_key /etc/nginx/secret/tls.key;
+
+    server_name _;
+
+    location /jenkins/ {
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header X-Forwarded-Host v-herd.eu;
+        proxy_set_header X-Forwarded-Port 8443;
+        proxy_pass http://localhost:8080;
+        # proxy_cookie_domain localhost $host;  # not necessary?? Maybe Jenkins produces correct cookies thanks to X-Forwarded or other settings
+    }
+}
+```
+
+Then, `sudo systemctl reload nginx`. Jenkins is now accessible at `https://v-herd.eu:8443/jenkins`.
+
 ## Using Shepherd
 
 Documents the most common steps after Shepherd is installed.
