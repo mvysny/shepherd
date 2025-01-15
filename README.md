@@ -149,7 +149,7 @@ then access Jenkins via [localhost:8080](http://localhost:8080), then
 Then, install docker and add permissions to the Jenkins user to run it:
 
 ```bash
-$ apt install docker.io
+$ apt install docker.io docker-buildx
 $ usermod -aG docker jenkins
 $ reboot
 ```
