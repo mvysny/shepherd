@@ -1,0 +1,6 @@
+#!/bin/bash
+set -e -o pipefail
+
+# delete all dangling images and all build caches.
+# use `docker system df` to check how much disk space docker uses.
+docker system prune -f

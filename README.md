@@ -282,20 +282,10 @@ Example of the `index.html` can be found at [#12](https://github.com/mvysny/shep
 
 ### After Installation
 
-If unchecked, docker build images will consume all disk space. Add the following cron daily job to purge the images:
+If unchecked, docker build images will consume all disk space. Add the following cron weekly job to purge the images:
 
 ```bash
-$ vim /etc/cron.daily/docker-prune
-```
-
-```bash
-#!/bin/bash
-set -e -o pipefail
-docker system prune -f
-```
-
-```bash
-$ chmod a+x /etc/cron.daily/docker-prune
+$ ln -s /opt/shepherd/shepherd-clearcache /etc/cron.weekly/
 ```
 
 #### Exposing Jenkins via https
