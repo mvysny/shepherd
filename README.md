@@ -16,7 +16,7 @@ See the [previous Vaadin Shepherd](https://gitlab.vaadin.com/mavi/vaadin-shepher
 Shepherd expects the following from your project:
 
 1. It must have `Dockerfile` at the root of its git repo.
-2. The Docker image can be built via the `docker build --no-cache -t test/xyz:latest .` command;
+2. The Docker image can be built via the `docker build -t test/xyz:latest .` command;
    The image can be run via `docker run --rm -ti -p8080:8080 test/xyz` command.
 3. You can now register the project to Shepherd. **Continue to the "Adding a project" chapter** below.
 
