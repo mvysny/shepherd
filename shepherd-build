@@ -60,7 +60,13 @@ DOCKERFILE="${DOCKERFILE:-Dockerfile}"
 # Then, add the following to your `Dockerfile`: `ARG offlinekey`; `ENV VAADIN_OFFLINE_KEY=$offlinekey`
 # Uses 2 CPUs per build to speed things up.
 echo "Building image $IMAGE"
-docker build -f "$DOCKERFILE" -t "$IMAGE:latest" -m "$BUILD_MEMORY" --cpu-period 100000 --cpu-quota "$CPU_QUOTA" $BUILD_ARGS .
+docker build --cache-from "type=local,src=/var/cache/shepherd/docker/$PROJECT_ID" \
+  --cache-to "type=local,dest=/var/cache/shepherd/docker/$PROJECT_ID" \
+  -f "$DOCKERFILE" \
+  -t "$IMAGE:latest" \
+  -m "$BUILD_MEMORY" --cpu-period 100000 --cpu-quota "$CPU_QUOTA" \
+  $BUILD_ARGS .
+
 # push it to k8s local repository
 echo "Pushing image $IMAGE to k8s local repository"
 docker push "$IMAGE:latest"

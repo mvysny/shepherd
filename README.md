@@ -231,6 +231,41 @@ Everything is now configured. To update Shepherd scripts, simply run
 $ cd /opt/shepherd && sudo git pull --rebase
 ```
 
+### Docker Build Cache
+
+We need docker-buildx to enable docker build cache. To take advantage of build caches,
+the project must contain this in their `Dockerfile`s:
+```
+RUN --mount=type=cache,target=/root/.gradle --mount=type=cache,target=/root/.vaadin ./gradlew clean build -Pvaadin.productionMode --no-daemon --info --stacktrace
+```
+Note the `--mount-type` arg.
+
+We need separate build caches per project, otherwise we can't build projects in parallel since
+they would overwrite their caches. See [#3](https://github.com/mvysny/shepherd/issues/3) for more details.
+
+```bash
+sudo mkdir -p /var/cache/shepherd/docker
+sudo chgrp docker /var/cache/shepherd/docker
+sudo chmod g+w /var/cache/shepherd/docker
+```
+Edit `/etc/docker/daemon.json` and enable containerd-snapshotter:
+```json
+{
+  "features": {
+    "containerd-snapshotter": true
+  }
+}
+```
+Restart docker daemon:
+```bash
+$ systemctl restart docker.service
+```
+Verify that the setting took effect:
+```bash
+$ docker info|grep driver-type
+driver-type: io.containerd.snapshotter.v1
+```
+
 ### Enabling HTTPS/SSL
 
 Follow the Certbot/Let's Encrypt: https://microk8s.io/docs/addon-cert-manager tutorial.

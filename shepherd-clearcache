@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e -o pipefail
 
-# delete all dangling images and all build caches.
+# delete all dangling images.
 # use `docker system df` to check how much disk space docker uses.
 docker system prune -f
+
+# delete all build caches
+rm -rf /var/cache/shepherd/docker/*
