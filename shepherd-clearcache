@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e -o pipefail
 
+# If unchecked, docker build images will consume all disk space.
+# Register this script as a cron weekly job, to purge the images:
+#
+# ln -s /opt/shepherd/shepherd-clearcache /etc/cron.weekly/
+
 # delete all dangling images.
 # use `docker system df` to check how much disk space docker uses.
 docker system prune -f
